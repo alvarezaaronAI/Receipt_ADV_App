@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "714739058084",
+    "firebase_url": "https://receipts-alphag.firebaseio.com",
+    "project_id": "receipts-alphag",
+    "storage_bucket": "receipts-alphag.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:714739058084:android:26a65302b3fc87d2",
+        "android_client_info": {
+          "package_name": "alphag.com.receipts"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "714739058084-f2rnpjkd5v7psc2edek1qtakb2ifb705.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaMO0i9eAtmk6Xb0f5EPEbQfgVvFaI8lM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
