@@ -23,6 +23,8 @@
             android:name=".CameraDetect"
             android:label="@string/title_activity_camera_detect"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
     </application>
+
 
 </manifest>
