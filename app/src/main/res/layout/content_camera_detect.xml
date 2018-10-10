@@ -8,4 +8,44 @@
     tools:context=".CameraDetect"
     tools:showIn="@layout/activity_camera_detect">
 
+    <ImageView
+        android:id="@+id/camera_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/image_for_detection"
+        android:scaleType="fitStart"
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/camera_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/camera_button_snapshot"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <Button
+        android:id="@+id/camera_button_snapshot"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/snapshot"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/camera_button_detect"
+        android:onClick="camera_button_snapshot"
+        />
+
+    <Button
+        android:id="@+id/camera_button_detect"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/detect"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/camera_button_snapshot"
+        app:layout_constraintRight_toRightOf="parent"
+        android:onClick="camera_button_detect"
+        />
 </android.support.constraint.ConstraintLayout>
