@@ -32,4 +32,12 @@
         android:onClick="camera_button"
         />
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gerardo"
+        tools:layout_editor_absoluteX="55dp"
+        tools:layout_editor_absoluteY="123dp" />
+
 </android.support.constraint.ConstraintLayout>
