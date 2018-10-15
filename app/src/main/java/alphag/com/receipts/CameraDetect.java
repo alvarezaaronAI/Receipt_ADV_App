@@ -32,6 +32,7 @@ public class CameraDetect extends AppCompatActivity {
     private Button mButton_Detect;
     private TextView mTextview_Text;
     private Bitmap imageBitmap;
+    private ImageView mimageView;
     //Static Member Variables.
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
