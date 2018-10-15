@@ -42,8 +42,10 @@ public class CameraDetect extends AppCompatActivity {
     private Bitmap imageBitmap;
     String mCurrentPhotoPath;
     //Static Member Variables.
-    private static final int REQUEST_IMAGE_CAPTURE = 1 ;
+    private static final int REQUEST_IMAGE_CAPTURE = 2 ;
     static final int REQUEST_TAKE_PHOTO = 1;
+    //Log Cats Variables
+    public static String DTAG ="File Path";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +88,14 @@ public class CameraDetect extends AppCompatActivity {
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
             }
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            imageBitmap = (Bitmap) extras.get("data");
+            mImageView_Camera.setImageBitmap(imageBitmap);
         }
     }
     //This method will allows to retrieve the photo, to detect text recognition.
@@ -172,8 +182,9 @@ public class CameraDetect extends AppCompatActivity {
     /*
      * Handles High Quality Picture
      */
+    //Method that creates a path.
     private File createImageFile() throws IOException {
-        // Create an image file name
+        // Create an temp image File to store.
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "Receipt_Date_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
