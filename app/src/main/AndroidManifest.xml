@@ -30,7 +30,7 @@
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.example.android.fileprovider"
+            android:authorities="alphag.com.receipts"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
