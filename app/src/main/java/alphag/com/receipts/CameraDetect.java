@@ -71,9 +71,12 @@ public class CameraDetect extends AppCompatActivity {
         mTextview_Text = findViewById(R.id.camera_text);
         //---------------------
         //Check Permissions
-        Log.i(ITAG, "Permissions State : " +permissionGranted + "On Create");
+        Log.i(ITAG, "Permissions State : " +permissionGranted + " On Create");
         if(!permissionGranted){
-            checkPermissions();
+            Log.i(ITAG, "onCreate: Went Through here");
+            if(checkPermissions()){
+                permissionGranted = true;
+            }
         }
 
     }
@@ -160,7 +163,6 @@ public class CameraDetect extends AppCompatActivity {
             dispatchTakePictureIntent();
         }
         else{
-            Log.i(ITAG , "Permissions was not granted.");
             Intent intent = new Intent(this, HomeActivity.class);
             Snackbar.make(view, "You Must Grant permissions ", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
@@ -246,6 +248,7 @@ public class CameraDetect extends AppCompatActivity {
         // Permissions Check Int val will result 0 if all permissions was granted, other wise < 0 if 1 or many permissions were denied.
         //TODO Edit a better way to check all permissions at once without needed to add.
         int permissionsCheck = permissionCheckCamera + permissionCheckReadable + permissionCheckWritable;
+        Log.i(ITAG, "checkPermissions: " + permissionsCheck);
         //Allow the user to request permissions on the spot, if he wants.
         if (permissionsCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{
