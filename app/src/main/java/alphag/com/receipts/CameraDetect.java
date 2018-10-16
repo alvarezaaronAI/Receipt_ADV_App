@@ -1,6 +1,8 @@
 package alphag.com.receipts;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -8,9 +10,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -40,12 +46,15 @@ public class CameraDetect extends AppCompatActivity {
     private TextView mTextview_Text;
     //More Member Variables ( Function Available)
     private Bitmap imageBitmap;
-    String mCurrentPhotoPath;
+    public String mCurrentPhotoPath;
+    public boolean permissionGranted;
     //Static Member Variables.
     private static final int REQUEST_IMAGE_CAPTURE = 2 ;
     static final int REQUEST_TAKE_PHOTO = 1;
+    public final static int REQUEST_CAMERA = 3;
     //Log Cats Variables
-    public static String DTAG ="File Path";
+    public static String DTAG ="Files";
+    public static String ITAG = "Permissions";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +70,12 @@ public class CameraDetect extends AppCompatActivity {
         mButton_Detect = findViewById(R.id.camera_button_detect);
         mTextview_Text = findViewById(R.id.camera_text);
         //---------------------
+        //Check Permissions
+        Log.i(ITAG, "Permissions State : " +permissionGranted + "On Create");
+        if(!permissionGranted){
+            checkPermissions();
+        }
+
     }
 
     /*
@@ -76,18 +91,23 @@ public class CameraDetect extends AppCompatActivity {
             File photoFile = null;
             try {
                 photoFile = createImageFile();
+                Log.d(DTAG, "dispatchTakePictureIntent: " + photoFile.toString());
             } catch (IOException ex) {
                 // Error occurred while creating the File
                 ex.getStackTrace();
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
+                Log.d(DTAG,"Passed Photo Path Not NULL");
                 Uri photoURI = FileProvider.getUriForFile(this,
                         "alphag.com.receipts",
                         photoFile);
+                Log.d(DTAG,"Created New URI");
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+                Log.d(DTAG,"Tooked a Picture.");
             }
+            Log.d(DTAG,"Passed URI creator");
         }
     }
     @Override
@@ -135,7 +155,17 @@ public class CameraDetect extends AppCompatActivity {
      */
     //This method would handle Button Snapshot.
     public void camera_button_snapshot(View view) {
-        dispatchTakePictureIntent();
+        Log.i(ITAG, "Permissions State : " +permissionGranted + "Method");
+        if(permissionGranted) {
+            dispatchTakePictureIntent();
+        }
+        else{
+            Log.i(ITAG , "Permissions was not granted.");
+            Intent intent = new Intent(this, HomeActivity.class);
+            Snackbar.make(view, "You Must Grant permissions ", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+            startActivity(intent);
+        }
     }
     //This method would handle Button Detect.
     public void camera_button_detect(View view) {
@@ -201,4 +231,64 @@ public class CameraDetect extends AppCompatActivity {
     /*
      * Handles Permissions Methods
      */
+    //Checks and grants permission to use camera, if and only if is not yet accepted.
+    public boolean checkPermissions() {
+        //Checking for Write External Storage Permission.
+        if (!isExternalStorageWritable()) {
+            Toast.makeText(this, "This app will only work with usable external storage.", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        //Checking for all permissions manifest State.
+        int permissionCheckCamera = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        int permissionCheckWritable = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int permissionCheckReadable = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        //TODO Write Code to check permissions for Geo Location.
+        // Permissions Check Int val will result 0 if all permissions was granted, other wise < 0 if 1 or many permissions were denied.
+        //TODO Edit a better way to check all permissions at once without needed to add.
+        int permissionsCheck = permissionCheckCamera + permissionCheckReadable + permissionCheckWritable;
+        //Allow the user to request permissions on the spot, if he wants.
+        if (permissionsCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                            Manifest.permission.CAMERA,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.READ_EXTERNAL_STORAGE},
+                    REQUEST_CAMERA);
+            return false;
+        } else {
+            return true;
+        }
+    }
+    //end checkPermissions.
+
+    //Method that checks if External Device is Writable.
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
+    }
+    //end isExternalStorageWritable.
+
+    //Method that handles permission response.
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        //TODO Write code to check permissions result overall.
+        if (requestCode == REQUEST_CAMERA) {
+            //Receive permission result camera permission.
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //Camera Permissions has been granted, preview can be displayed.
+
+                //TODO Show Camera preview.
+                //Write Code here...
+
+                Toast.makeText(this, "Camera is now Open.", Toast.LENGTH_SHORT).show();
+                permissionGranted = true;
+            } else {
+                //Else all other permissions was denied. permission was denied.
+                Toast.makeText(this, "Camera permissions was denied.", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            //show permission result.
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+    //end onRequestPermissionsResult.
+
 }
