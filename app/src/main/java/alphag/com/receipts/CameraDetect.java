@@ -49,12 +49,13 @@ public class CameraDetect extends AppCompatActivity {
     public String mCurrentPhotoPath;
     public boolean permissionGranted;
     //Static Member Variables.
-    private static final int REQUEST_IMAGE_CAPTURE = 2 ;
+    private static final int REQUEST_IMAGE_CAPTURE = 1 ;
     static final int REQUEST_TAKE_PHOTO = 1;
     public final static int REQUEST_CAMERA = 3;
     //Log Cats Variables
     public static String DTAG ="Files";
     public static String ITAG = "Permissions";
+    public static String DImageTag = "Images";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,11 +116,7 @@ public class CameraDetect extends AppCompatActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            imageBitmap = (Bitmap) extras.get("data");
-            mImageView_Camera.setImageBitmap(imageBitmap);
-        }
+        setPic();
     }
     //This method will allows to retrieve the photo, to detect text recognition.
     private void setPic() {
