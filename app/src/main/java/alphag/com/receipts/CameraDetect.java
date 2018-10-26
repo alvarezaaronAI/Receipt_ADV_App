@@ -56,6 +56,7 @@ public class CameraDetect extends AppCompatActivity {
     public static String DTAG ="Files";
     public static String ITAG = "Permissions";
     public static String DImageTag = "Images";
+    public static String FireBaseTag = "FireBase";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +141,7 @@ public class CameraDetect extends AppCompatActivity {
         bmOptions.inPurgeable = true;
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+        imageBitmap = bitmap;
         mImageView_Camera.setImageBitmap(bitmap);
     }
     //This method will allow us to save the current photo to our gallery, using the most recent path.
@@ -174,6 +176,7 @@ public class CameraDetect extends AppCompatActivity {
      * Handles image recognition
      */
     private void detect_text() {
+        Log.d(FireBaseTag, " " + (imageBitmap == null) );
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(imageBitmap);
         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
                 .getOnDeviceTextRecognizer();
@@ -201,8 +204,9 @@ public class CameraDetect extends AppCompatActivity {
         }
         for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks() ){
             String text = block.getText();
-            mTextview_Text.setTextSize(14);
-            mTextview_Text.setText(text);
+            mTextview_Text.setTextSize(24);
+            mTextview_Text.append(text +  " \n --");
+
         }
     }
     private void showToast(String message) {
