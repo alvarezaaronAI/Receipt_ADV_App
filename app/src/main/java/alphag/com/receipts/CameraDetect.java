@@ -178,8 +178,12 @@ public class CameraDetect extends AppCompatActivity {
     private void detect_text() {
         Log.d(FireBaseTag, " " + (imageBitmap == null) );
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(imageBitmap);
+        /**
         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
                 .getOnDeviceTextRecognizer();
+         **/
+        FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
+                .getCloudTextRecognizer();
         detector.processImage(image).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
             @Override
             public void onSuccess(FirebaseVisionText firebaseVisionText) {
