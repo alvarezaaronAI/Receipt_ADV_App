@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,6 +33,7 @@ import com.google.firebase.ml.vision.document.FirebaseVisionDocumentText;
 import com.google.firebase.ml.vision.document.FirebaseVisionDocumentTextRecognizer;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
+import com.google.firebase.ml.vision.text.RecognizedLanguage;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,6 +60,9 @@ public class CameraDetect extends AppCompatActivity {
     public static String ITAG = "Permissions";
     public static String DImageTag = "Images";
     public static String FireBaseTag = "FireBase";
+    public static String BlockText = "BlockText";
+    public static String LineText = "LineText";
+    public static String ElementText = "ElemenText";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,6 +217,23 @@ public class CameraDetect extends AppCompatActivity {
             mTextview_Text.setTextSize(24);
             mTextview_Text.append(text +  " \n --");
 
+        }
+
+        //String resultText = result.getText();
+        for (FirebaseVisionText.TextBlock block: firebaseVisionText.getTextBlocks()) {
+            String blockText = block.getText();
+            Log.d(BlockText, "process_text: " + blockText);
+            List<RecognizedLanguage> blockLanguages = block.getRecognizedLanguages();
+            for (FirebaseVisionText.Line line: block.getLines()) {
+                String lineText = line.getText();
+                Log.d(LineText, "process_text: " + lineText);
+                List<RecognizedLanguage> lineLanguages = line.getRecognizedLanguages();
+                for (FirebaseVisionText.Element element: line.getElements()) {
+                    String elementText = element.getText();
+                    Log.d(ElementText, "process_text: " + elementText );
+                    List<RecognizedLanguage> elementLanguages = element.getRecognizedLanguages();
+                }
+            }
         }
     }
     private void showToast(String message) {
