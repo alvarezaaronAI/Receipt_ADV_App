@@ -35,7 +35,11 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class CameraDetect extends AppCompatActivity {
@@ -192,7 +196,7 @@ public class CameraDetect extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                Log.d(DTAG, "******* Failed (Are you connected to the wifi?) *********");
             }
         });
     }
@@ -200,19 +204,141 @@ public class CameraDetect extends AppCompatActivity {
     /*
      * Handles image processing to external uses
      */
+//    FirebaseVisionText.TextBlock labelBlock;
+//    FirebaseVisionText.TextBlock costBlock;
+//    boolean foundLabelBlockFirstTime = false;
+//    String[] keywords = {"total", "amount", "payment"};
+
+//    private void process_text(FirebaseVisionText firebaseVisionText) {
+//        List<FirebaseVisionText.TextBlock> blocks = firebaseVisionText.getTextBlocks();
+//        if (blocks.size() == 0) {
+//            showToast("No text found");
+//            return;
+//        }
+//
+//        // Find the block with the keywords...
+//        for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks() ){
+//            String text = block.getText();
+//            mTextview_Text.setTextSize(24);
+//            mTextview_Text.append(text +  " \n --");
+//
+//            Log.d("TEXT: ", "\n");
+//            Log.d("TEXT: ", "\n----------BLOCK----------\n");
+//            Log.d("TEXT: ", "\n\n" + text);
+//            Log.d("TEXT: ", "\n-------------------------\n");
+//            Log.d("TEXT: ", "\n");
+//
+//
+//            // on each line in each block...
+//            //      Every line is returned as a String...
+//            //          if a keyword is found in a line... SAVE BLOCK (label).
+//            for (FirebaseVisionText.Line line : block.getLines()) {
+//                for (String keyword : keywords) {
+//                    if (line.getText().toLowerCase().contains(keyword)) {
+//                        labelBlock = block;
+////                        foundLabelBlockFirstTime = true;
+//                    }
+//                }
+//            }
+//        }
+//        // can only use labelBlock if not null
+//
+//        if(labelBlock != null){
+//            Log.d("TEXT:", "-----LabelBlock-----" + labelBlock.getText());
+//        }
+//
+//    }
+
+
+/*
+    Find $ or '.' along with 2 integers after it
+ */
+
+    FirebaseVisionText.TextBlock labelBlock;
+    FirebaseVisionText.TextBlock costBlock;
+//    String[] keywords = {"total", "amount", "payment"};
+
     private void process_text(FirebaseVisionText firebaseVisionText) {
+        HashMap<Integer, Double> pricesHashMap = new HashMap<>();
+        boolean containsDollarSign = false;
+        double maxPrice = -1;
+
         List<FirebaseVisionText.TextBlock> blocks = firebaseVisionText.getTextBlocks();
         if (blocks.size() == 0) {
             showToast("No text found");
             return;
         }
         for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks() ){
-            String text = block.getText();
-            mTextview_Text.setTextSize(24);
-            mTextview_Text.append(text +  " \n --");
+            //String text = block.getText();
+//            mTextview_Text.setTextSize(24);
+//            mTextview_Text.append(text +  " \n --");
+
+
+            List<FirebaseVisionText.Line> lines = block.getLines();
+            for (int i = 0; i < lines.size(); i++) {
+                FirebaseVisionText.Line line = lines.get(i);
+                //for (String keyword : keywords) {
+                containsDollarSign = line.getText().toLowerCase().contains("$");
+                //containsCents = line.getText().toLowerCase().contains(".");
+                if (containsDollarSign) {
+//                        labelBlock = block;
+                    // Store line.gettext into a hash map and then use it later to
+                    // return the max value and display on screen
+//                    Log.d("TEXT:", "-----Price-----" + line.getText());
+
+                    // Clean up line and then place into map
+
+                    pricesHashMap.put(i, cleanUpStringPriceToDoublePrice(line.getText()));
+
+                    maxPrice = getMaxPrice(pricesHashMap.values());
+                    Log.d("TEXT:", "-----TRUE TOTAL-----" + maxPrice);
+                }
+                //}
+            }
+
 
         }
+        Log.d("TEXT:", "-----MAP-----" + pricesHashMap.values());
+        mTextview_Text.setTextSize(24);
+        mTextview_Text.append("$" + maxPrice);
     }
+
+    private double cleanUpStringPriceToDoublePrice(String price){
+
+        //Clean this up too "APPS -VEG SPRINGROLL UPSELL 1.00"
+        String rawStringArray[] = price.split(" ");
+        //Log.d("TEXT:", "-----MAP-----" + Arrays.toString(rawStringArray));
+
+        // Iterate and choose element with $ or .
+
+        if (price != null){
+            for (String aRawStringArray : rawStringArray) {
+                if ((aRawStringArray.contains("$") || aRawStringArray.contains(".")) && !aRawStringArray.contains("%")) {
+                    price = aRawStringArray;
+                }
+            }
+
+            String stringDouble = price.replace("$", "");
+            Log.d("TEXT:", "-----MAP-----" + stringDouble);
+            return Double.parseDouble(stringDouble);
+        }
+        else{
+            return -1;
+        }
+    }
+
+    private double getMaxPrice(Collection<Double> prices){
+        double maxPrice = 0;
+        for(double price: prices){
+            if (price > maxPrice){
+                maxPrice = price;
+            }
+        }
+        return maxPrice;
+    }
+
+
+
     private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
