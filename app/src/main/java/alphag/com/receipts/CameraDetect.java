@@ -40,7 +40,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CameraDetect extends AppCompatActivity {
     //Member Variables.
@@ -61,6 +63,10 @@ public class CameraDetect extends AppCompatActivity {
     public static String ITAG = "Permissions";
     public static String DImageTag = "Images";
     public static String FireBaseTag = "FireBase";
+
+//    public static HashMap<Integer, Double> pricesHashMap = new HashMap<>();
+    public static Set<Double> pricesHashSet = new HashSet<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,128 +210,70 @@ public class CameraDetect extends AppCompatActivity {
     /*
      * Handles image processing to external uses
      */
-//    FirebaseVisionText.TextBlock labelBlock;
-//    FirebaseVisionText.TextBlock costBlock;
-//    boolean foundLabelBlockFirstTime = false;
-//    String[] keywords = {"total", "amount", "payment"};
-
-//    private void process_text(FirebaseVisionText firebaseVisionText) {
-//        List<FirebaseVisionText.TextBlock> blocks = firebaseVisionText.getTextBlocks();
-//        if (blocks.size() == 0) {
-//            showToast("No text found");
-//            return;
-//        }
-//
-//        // Find the block with the keywords...
-//        for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks() ){
-//            String text = block.getText();
-//            mTextview_Text.setTextSize(24);
-//            mTextview_Text.append(text +  " \n --");
-//
-//            Log.d("TEXT: ", "\n");
-//            Log.d("TEXT: ", "\n----------BLOCK----------\n");
-//            Log.d("TEXT: ", "\n\n" + text);
-//            Log.d("TEXT: ", "\n-------------------------\n");
-//            Log.d("TEXT: ", "\n");
-//
-//
-//            // on each line in each block...
-//            //      Every line is returned as a String...
-//            //          if a keyword is found in a line... SAVE BLOCK (label).
-//            for (FirebaseVisionText.Line line : block.getLines()) {
-//                for (String keyword : keywords) {
-//                    if (line.getText().toLowerCase().contains(keyword)) {
-//                        labelBlock = block;
-////                        foundLabelBlockFirstTime = true;
-//                    }
-//                }
-//            }
-//        }
-//        // can only use labelBlock if not null
-//
-//        if(labelBlock != null){
-//            Log.d("TEXT:", "-----LabelBlock-----" + labelBlock.getText());
-//        }
-//
-//    }
-
-
-/*
-    Find $ or '.' along with 2 integers after it
- */
-
-    FirebaseVisionText.TextBlock labelBlock;
-    FirebaseVisionText.TextBlock costBlock;
-//    String[] keywords = {"total", "amount", "payment"};
-
     private void process_text(FirebaseVisionText firebaseVisionText) {
-        HashMap<Integer, Double> pricesHashMap = new HashMap<>();
-        boolean containsDollarSign = false;
+        // Reset elements
+        pricesHashSet.clear();
+        mTextview_Text.setText("");
         double maxPrice = -1;
+        double cleanedNumber;
+        String readErrorMessage = "Please Take Photo Again";
 
+        // Base case for reading empty block
         List<FirebaseVisionText.TextBlock> blocks = firebaseVisionText.getTextBlocks();
         if (blocks.size() == 0) {
             showToast("No text found");
             return;
         }
+
+        // Read block by block
         for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks() ){
-            //String text = block.getText();
-//            mTextview_Text.setTextSize(24);
-//            mTextview_Text.append(text +  " \n --");
-
-
             List<FirebaseVisionText.Line> lines = block.getLines();
+
+            // Read each line in current block
             for (int i = 0; i < lines.size(); i++) {
                 FirebaseVisionText.Line line = lines.get(i);
-                //for (String keyword : keywords) {
-                containsDollarSign = line.getText().toLowerCase().contains("$");
-                //containsCents = line.getText().toLowerCase().contains(".");
-                if (containsDollarSign) {
-//                        labelBlock = block;
-                    // Store line.gettext into a hash map and then use it later to
-                    // return the max value and display on screen
-//                    Log.d("TEXT:", "-----Price-----" + line.getText());
 
-                    // Clean up line and then place into map
-
-                    pricesHashMap.put(i, cleanUpStringPriceToDoublePrice(line.getText()));
-
-                    maxPrice = getMaxPrice(pricesHashMap.values());
-                    Log.d("TEXT:", "-----TRUE TOTAL-----" + maxPrice);
+                // Attempt to read line and add number to HashSet (MUST have try, catch)
+                try{
+                    cleanUpStringPriceToDoublePrice(line.getText());
+                }catch(Exception e){
+                    Log.d("TEXT:", "-----SKIPPING...-----" + "ERROR IN READING...");
+                    cleanedNumber = -1;
                 }
-                //}
             }
-
-
         }
-        Log.d("TEXT:", "-----MAP-----" + pricesHashMap.values());
+//        List<Double> pricesSetList = new ArrayList<>(pricesHashSet);
+//        Log.d("TEXT:", "-----MAP-----" + pricesSetList.toString());
+
+        // From HashSet --> Return max price from List
+        maxPrice = getMaxPrice(pricesHashSet);
+        Log.d("TEXT:", "-----TRUE TOTAL-----" + maxPrice);
+
+        // Update textView if maxPrice is not 0
+        // else the picture might not have read the text correctly
         mTextview_Text.setTextSize(24);
-        mTextview_Text.append("$" + maxPrice);
-    }
-
-    private double cleanUpStringPriceToDoublePrice(String price){
-
-        //Clean this up too "APPS -VEG SPRINGROLL UPSELL 1.00"
-        String rawStringArray[] = price.split(" ");
-        //Log.d("TEXT:", "-----MAP-----" + Arrays.toString(rawStringArray));
-
-        // Iterate and choose element with $ or .
-
-        if (price != null){
-            for (String aRawStringArray : rawStringArray) {
-                if ((aRawStringArray.contains("$") || aRawStringArray.contains(".")) && !aRawStringArray.contains("%")) {
-                    price = aRawStringArray;
-                }
-            }
-
-            String stringDouble = price.replace("$", "");
-            Log.d("TEXT:", "-----MAP-----" + stringDouble);
-            return Double.parseDouble(stringDouble);
+        if(maxPrice != 0){
+            mTextview_Text.append("$" + maxPrice);
         }
         else{
-            return -1;
+            mTextview_Text.append(readErrorMessage);
         }
     }
+
+    private void cleanUpStringPriceToDoublePrice(String price){
+        // This line splits the line by words or numbers and
+        // avoids special characters except the '.'
+        String rawStringArray[] = price.split("[^.\\w]");
+        String lastElementInLine = rawStringArray[rawStringArray.length-1];
+
+        // Since most receipts have their values on the right side and since we are reading line by
+        // line, we take the last element from the current line and parse the element to our HashSet
+        if (lastElementInLine.contains(".")){
+            pricesHashSet.add(Double.parseDouble(lastElementInLine));
+        }
+    }
+
+
 
     private double getMaxPrice(Collection<Double> prices){
         double maxPrice = 0;

@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Receipts</string>
-
     <string name="title_activity_camera_detect">CameraDetect</string>
     <string name="camera">Camera</string>
     <string name="detect">Detect</string>
