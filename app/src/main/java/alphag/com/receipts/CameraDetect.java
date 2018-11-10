@@ -58,6 +58,7 @@ public class CameraDetect extends AppCompatActivity {
     public static String DImageTag = "Images";
     public static String FireBaseTag = "FireBase";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //On Create
@@ -235,6 +236,9 @@ public class CameraDetect extends AppCompatActivity {
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
+
+
+
     /*
      * Handles Permissions Methods
      */
@@ -259,7 +263,8 @@ public class CameraDetect extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{
                             Manifest.permission.CAMERA,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE},
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.ACCESS_FINE_LOCATION,},
                     REQUEST_CAMERA);
             return false;
         } else {

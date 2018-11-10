@@ -6,4 +6,6 @@
     <string name="detect">Detect</string>
     <string name="snapshot">SnapShot</string>
     <string name="image_for_detection">Image for detection</string>
+    <string name="google_maps_API_">AIzaSyBYZ6EYpdLumR9dcWEfDXldcwN4zFFyUgw</string>
+
 </resources>
