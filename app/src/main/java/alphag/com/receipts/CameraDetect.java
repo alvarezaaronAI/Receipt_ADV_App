@@ -235,19 +235,16 @@ public class CameraDetect extends AppCompatActivity {
 
                 // Attempt to read line and add number to HashSet (MUST have try, catch)
                 try{
-                    cleanUpStringPriceToDoublePrice(line.getText());
+                    ParseUtils.cleanUpStringPriceToDoublePrice(line.getText(), pricesHashSet);
                 }catch(Exception e){
                     Log.d("TEXT:", "-----SKIPPING...-----" + "ERROR IN READING...");
                     cleanedNumber = -1;
                 }
             }
         }
-//        List<Double> pricesSetList = new ArrayList<>(pricesHashSet);
-//        Log.d("TEXT:", "-----MAP-----" + pricesSetList.toString());
 
         // From HashSet --> Return max price from List
-        maxPrice = getMaxPrice(pricesHashSet);
-        Log.d("TEXT:", "-----TRUE TOTAL-----" + maxPrice);
+        maxPrice = ParseUtils.getMaxPrice(pricesHashSet);
 
         // Update textView if maxPrice is not 0
         // else the picture might not have read the text correctly
@@ -259,32 +256,6 @@ public class CameraDetect extends AppCompatActivity {
             mTextview_Text.append(readErrorMessage);
         }
     }
-
-    private void cleanUpStringPriceToDoublePrice(String price){
-        // This line splits the line by words or numbers and
-        // avoids special characters except the '.'
-        String rawStringArray[] = price.split("[^.\\w]");
-        String lastElementInLine = rawStringArray[rawStringArray.length-1];
-
-        // Since most receipts have their values on the right side and since we are reading line by
-        // line, we take the last element from the current line and parse the element to our HashSet
-        if (lastElementInLine.contains(".")){
-            pricesHashSet.add(Double.parseDouble(lastElementInLine));
-        }
-    }
-
-
-
-    private double getMaxPrice(Collection<Double> prices){
-        double maxPrice = 0;
-        for(double price: prices){
-            if (price > maxPrice){
-                maxPrice = price;
-            }
-        }
-        return maxPrice;
-    }
-
 
 
     private void showToast(String message) {
