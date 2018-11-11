@@ -30,13 +30,16 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBYZ6EYpdLumR9dcWEfDXldcwN4zFFyUgw"/>
 
-        <activity android:name=".HomeActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+        <activity android:name=".MapUtils">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+
 
         <activity
             android:name=".CameraDetect"

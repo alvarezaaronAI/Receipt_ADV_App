@@ -22,6 +22,7 @@ android {
 dependencies {
     //-Regular Dependencies-
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:support-v4:28.0.0'
@@ -33,15 +34,15 @@ dependencies {
 
     //-Modification by Aaron Alvarez- Dependencies
     implementation 'com.google.firebase:firebase-core:16.0.4'
-    implementation 'com.google.firebase:firebase-ml-vision:17.0.1'
+    implementation 'com.google.firebase:firebase-ml-vision:18.0.1'
     //-------------------------------
 
     //Grod
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
-    compile 'com.google.android.gms:play-services:11.4.0'
 
-    apply plugin: 'com.android.application'
+
+
 
 }
 //-Modification by Aaron Alvarez- Plugins
@@ -49,3 +50,4 @@ apply plugin: 'com.google.gms.google-services'
 
 
 
+apply plugin: 'com.android.application'
