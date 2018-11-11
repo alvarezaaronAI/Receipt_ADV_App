@@ -2,9 +2,13 @@ package alphag.com.receipts;
 
 
 import android.app.Dialog;
+import android.app.IntentService;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -19,6 +23,21 @@ public class Location_map extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.location );
+
+        if(isServicesOK()){
+            init();
+        }
+    }
+
+    private void init(){
+        Button btnMap = (Button) findViewById(R.id.btnMap);
+        btnMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Location_map.this, MapUtils.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public boolean isServicesOK(){

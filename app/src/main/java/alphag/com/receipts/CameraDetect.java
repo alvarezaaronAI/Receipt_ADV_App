@@ -64,12 +64,10 @@ public class CameraDetect extends AppCompatActivity {
     public static String DImageTag = "Images";
     public static String FireBaseTag = "FireBase";
 
-<<<<<<< HEAD
-=======
 //    public static HashMap<Integer, Double> pricesHashMap = new HashMap<>();
     public static Set<Double> pricesHashSet = new HashSet<>();
 
->>>>>>> 6dba19e1d23ce5f9510e13cd3eba9fde507c8089
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
