@@ -35,8 +35,14 @@ import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CameraDetect extends AppCompatActivity {
     //Member Variables.
@@ -57,6 +63,10 @@ public class CameraDetect extends AppCompatActivity {
     public static String ITAG = "Permissions";
     public static String DImageTag = "Images";
     public static String FireBaseTag = "FireBase";
+
+//    public static HashMap<Integer, Double> pricesHashMap = new HashMap<>();
+    public static Set<Double> pricesHashSet = new HashSet<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,8 +188,12 @@ public class CameraDetect extends AppCompatActivity {
     private void detect_text() {
         Log.d(FireBaseTag, " " + (imageBitmap == null) );
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(imageBitmap);
+        /**
         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
                 .getOnDeviceTextRecognizer();
+         **/
+        FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
+                .getCloudTextRecognizer();
         detector.processImage(image).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
             @Override
             public void onSuccess(FirebaseVisionText firebaseVisionText) {
@@ -188,7 +202,7 @@ public class CameraDetect extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                Log.d(DTAG, "******* Failed (Are you connected to the wifi?) *********");
             }
         });
     }
@@ -197,18 +211,53 @@ public class CameraDetect extends AppCompatActivity {
      * Handles image processing to external uses
      */
     private void process_text(FirebaseVisionText firebaseVisionText) {
+        // Reset elements
+        pricesHashSet.clear();
+        mTextview_Text.setText("");
+        double maxPrice = -1;
+        double cleanedNumber;
+        String readErrorMessage = "Please Take Photo Again";
+
+        // Base case for reading empty block
         List<FirebaseVisionText.TextBlock> blocks = firebaseVisionText.getTextBlocks();
         if (blocks.size() == 0) {
             showToast("No text found");
             return;
         }
-        for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks() ){
-            String text = block.getText();
-            mTextview_Text.setTextSize(24);
-            mTextview_Text.append(text +  " \n --");
 
+        // Read block by block
+        for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks() ){
+            List<FirebaseVisionText.Line> lines = block.getLines();
+
+            // Read each line in current block
+            for (int i = 0; i < lines.size(); i++) {
+                FirebaseVisionText.Line line = lines.get(i);
+
+                // Attempt to read line and add number to HashSet (MUST have try, catch)
+                try{
+                    ParseUtils.cleanUpStringPriceToDoublePrice(line.getText(), pricesHashSet);
+                }catch(Exception e){
+                    Log.d("TEXT:", "-----SKIPPING...-----" + "ERROR IN READING...");
+                    cleanedNumber = -1;
+                }
+            }
+        }
+
+        // From HashSet --> Return max price from List
+        maxPrice = ParseUtils.getMaxPrice(pricesHashSet);
+
+        // Update textView if maxPrice is not 0
+        // else the picture might not have read the text correctly
+        mTextview_Text.setTextSize(24);
+        if(maxPrice != 0){
+            mTextview_Text.append("$" + maxPrice);
+        }
+        else{
+            mTextview_Text.append(readErrorMessage);
         }
     }
+
+
     private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
