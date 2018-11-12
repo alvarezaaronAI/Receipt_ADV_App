@@ -5,4 +5,6 @@
     <string name="detect">Detect</string>
     <string name="snapshot">SnapShot</string>
     <string name="image_for_detection">Image for detection</string>
+    <string name="user_id">User Id</string>
+    <string name="receipts_id">Receipts Id</string>
 </resources>
