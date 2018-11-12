@@ -7,16 +7,16 @@
     android:padding="16dp"
     tools:context=".FirebaseActivity">
 
-    <EditText
-        android:id="@+id/et_user_id"
+    <TextView
+        android:id="@+id/tv_user_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="@string/user_id"
         android:padding="16dp"
         android:textAlignment="center" />
 
-    <EditText
-        android:id="@+id/et_receipts_id"
+    <TextView
+        android:id="@+id/tv_receipts_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="@string/receipts_id"
