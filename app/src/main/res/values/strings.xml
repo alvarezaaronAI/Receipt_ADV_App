@@ -10,4 +10,9 @@
     <string name="email">Email</string>
     <string name="login">Login</string>
     <string name="sign_up">No Account Yet? Create One.</string>
+    <string name="name">Name</string>
+    <string name="hint_first_name">First Name</string>
+    <string name="hint_last_name">Last Name</string>
+    <string name="match_password">Match Password</string>
+    <string name="create_new_account">Create New Account</string>
 </resources>

@@ -43,7 +43,8 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".Auth_Sign_In"></activity>
+        <activity android:name=".Auth_Sign_In" />
+        <activity android:name=".Auth_Sign_Up"></activity>
     </application>
 
 </manifest>

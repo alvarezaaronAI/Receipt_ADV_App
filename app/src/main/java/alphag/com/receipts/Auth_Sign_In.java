@@ -6,10 +6,13 @@ import android.view.View;
 import android.widget.EditText;
 
 public class Auth_Sign_In extends AppCompatActivity {
+    //Log Cat 
+    private static final String TAG = "Auth_Sign_In";
     //Member Variables
     EditText mEmailSignIn;
     EditText mPassWordIn;
     //Firebase Authentication
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
