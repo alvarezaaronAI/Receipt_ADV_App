@@ -39,7 +39,6 @@ public class Auth_Sign_In extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         if (mAuth != null){
             //Handle User Already Sign In

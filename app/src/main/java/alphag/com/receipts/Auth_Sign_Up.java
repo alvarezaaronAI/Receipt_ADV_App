@@ -3,8 +3,10 @@ package alphag.com.receipts;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -39,8 +41,8 @@ public class Auth_Sign_Up extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth__sign__up);
         //Views Instances
-        mFirstName = (EditText) findViewById(R.id.et_last_name_sign_up);
-        mLastName = (EditText) findViewById(R.id.et_first_name_sign_up);
+        mFirstName = (EditText) findViewById(R.id.et_first_name_sign_up);
+        mLastName = (EditText) findViewById(R.id.et_last_name_sign_up);
         mEmail = (EditText) findViewById(R.id.et_email_sign_up);
         mPassWord = (EditText) findViewById(R.id.et_password_sign_up);
         mPassWordMatch = (EditText) findViewById(R.id.et_password_match_sign_up);
@@ -53,7 +55,6 @@ public class Auth_Sign_Up extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         if (mAuth != null){
             //Handle User Already Sign in
-
         }
         else {
 
@@ -73,24 +74,36 @@ public class Auth_Sign_Up extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    Receipt receiptTemp = new Receipt("1234","5678","My new Address", "11/12/2018",null,13.45);
+
+                    Receipt receiptTemp = new Receipt(
+                            "1234",
+                            "5678",
+                            "My new Address",
+                            "11/12/2018",
+                            null,
+                            13.45);
+
                     ArrayList<Receipt> receiptsTemp = new ArrayList<>();
                     receiptsTemp.add(receiptTemp);
+                    //Creating User data
                     User userTemp = new User(firstNameTemp,lastNameTemp,emailTemp,receiptsTemp);
-                    //Store User onto a firebase database;
-                    mUsersRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid()).setValue(userTemp).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                    //Store User onto a Firebase database
+                    mUsersRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                            .setValue(userTemp)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()){
-                                //display toast if needed
+                                Toast.makeText(Auth_Sign_Up.this, "Created New Account : " + firstNameTemp , Toast.LENGTH_LONG).show();
                             }else{
-                                //failed
+                                Toast.makeText(Auth_Sign_Up.this, "Failed to Add New Account", Toast.LENGTH_LONG).show();
                             }
                         }
                     });
                 }
                 else{
-                    //Failed and we can display a toast.
+                    Toast.makeText(Auth_Sign_Up.this, "Failed to Create Special Token", Toast.LENGTH_SHORT).show();
                 }
             }
         });
