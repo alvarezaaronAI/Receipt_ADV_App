@@ -27,4 +27,16 @@ public class HomeActivity extends AppCompatActivity {
         //Start the Intent.
         startActivity(intent);
     }
+
+    public void sign_Up_Home_Handler(View view) {
+        Intent intent = new Intent(HomeActivity.this, Auth_Sign_Up.class);
+        //Start the Intent.
+        startActivity(intent);
+    }
+
+    public void sign_In_Home_Handler(View view) {
+        Intent intent = new Intent(HomeActivity.this, Auth_Sign_In.class);
+        //Start the Intent.
+        startActivity(intent);
+    }
 }

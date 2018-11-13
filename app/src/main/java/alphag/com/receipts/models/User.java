@@ -11,6 +11,17 @@ public class User {
     private String phoneNumber;
     private ArrayList<Receipt> receiptsArrayList;
 
+    public User(String firstName, String lastName,String email) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+    public User(String firstName, String lastName, String email, ArrayList<Receipt> receiptsArrayList) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.receiptsArrayList = receiptsArrayList;
+    }
     public User(String userId, String email, String firstName, String lastName, String phoneNumber, ArrayList<Receipt> receiptsArrayList) {
         this.userId = userId;
         this.email = email;

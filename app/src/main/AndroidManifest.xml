@@ -44,7 +44,8 @@
         </provider>
 
         <activity android:name=".Auth_Sign_In" />
-        <activity android:name=".Auth_Sign_Up"></activity>
+        <activity android:name=".Auth_Sign_Up" />
+        <activity android:name=".UserHome"></activity>
     </application>
 
 </manifest>
