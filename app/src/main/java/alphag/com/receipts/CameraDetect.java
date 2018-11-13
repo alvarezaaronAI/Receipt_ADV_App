@@ -217,6 +217,7 @@ public class CameraDetect extends AppCompatActivity {
         double maxPrice = -1;
         double cleanedNumber;
         String readErrorMessage = "Please Take Photo Again";
+        String address = null;
 
         // Base case for reading empty block
         List<FirebaseVisionText.TextBlock> blocks = firebaseVisionText.getTextBlocks();
@@ -228,6 +229,14 @@ public class CameraDetect extends AppCompatActivity {
         // Read block by block
         for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks() ){
             List<FirebaseVisionText.Line> lines = block.getLines();
+
+            // Look for address in block
+            if(address == null) {
+                address = ParseUtils.getAddressFromReceipt(block.getText());
+                //Log.d("ADDRESS", "Address: " + address);
+            }
+
+            Log.d("ADDRESS", "process_text: " + address);
 
             // Read each line in current block
             for (int i = 0; i < lines.size(); i++) {
