@@ -1,6 +1,7 @@
 package alphag.com.receipts;
 
 import android.content.Intent;
+import android.service.autofill.UserData;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -44,6 +45,9 @@ public class Auth_Sign_In extends AppCompatActivity {
             //Handle User Already Sign In
             Toast.makeText(Auth_Sign_In.this, "User is already logged in.",
                     Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(Auth_Sign_In.this, UserHome.class);
+            //Start the Intent.
+            startActivity(intent);
         }
         else {
             Toast.makeText(Auth_Sign_In.this, "User is Not Logged in",
@@ -64,7 +68,7 @@ public class Auth_Sign_In extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            //updateUI(user);
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
