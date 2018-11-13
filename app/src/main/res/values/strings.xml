@@ -5,4 +5,9 @@
     <string name="detect">Detect</string>
     <string name="snapshot">SnapShot</string>
     <string name="image_for_detection">Image for detection</string>
+    <string name="password">Password</string>
+    <string name="email_example">YourEmail@gmail.com</string>
+    <string name="email">Email</string>
+    <string name="login">Login</string>
+    <string name="sign_up">No Account Yet? Create One.</string>
 </resources>
