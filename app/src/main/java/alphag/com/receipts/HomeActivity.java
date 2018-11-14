@@ -5,17 +5,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 public class HomeActivity extends AppCompatActivity {
     //-Member Variables-
-    Button mButton_Camera;
+    ImageButton mButton_Camera;
     //----------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mButton_Camera = findViewById(R.id.camera_button);
+        mButton_Camera = (ImageButton) findViewById(R.id.camera_button);
     }
     /*
         This method goes to the next Activity, CAMERADETECT.
