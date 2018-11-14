@@ -3,52 +3,23 @@ package alphag.com.receipts.models;
 import java.util.ArrayList;
 
 public class User {
-    private String userId;
     private String address;
     private String email;
-    private String firstName;
-    private String lastName;
-    private String phoneNumber;
-    private ArrayList<Receipt> receiptsArrayList;
+    private String first_Name;
+    private String last_Name;
+    private String phone_Number;
+    private ArrayList<Receipt> receipts;
 
-    public User(String firstName, String lastName,String email) {
+    public User(String first_Name, String last_Name,String email) {
         this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.first_Name = first_Name;
+        this.last_Name = last_Name;
     }
-    public User(String firstName, String lastName, String email, ArrayList<Receipt> receiptsArrayList) {
+    public User(String first_Name, String last_Name,String email, ArrayList<Receipt> receipts) {
         this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.receiptsArrayList = receiptsArrayList;
-    }
-    public User(String userId, String email, String firstName, String lastName, String phoneNumber, ArrayList<Receipt> receiptsArrayList) {
-        this.userId = userId;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumber = setPhoneNumber(phoneNumber);
-        this.receiptsArrayList = receiptsArrayList;
-    }
-
-    public User(ArrayList<Receipt> receiptsArrayList) {
-        this.receiptsArrayList = receiptsArrayList;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public ArrayList<Receipt> getReceiptsArrayList() {
-        return receiptsArrayList;
-    }
-
-    public void setReceiptsArrayList(ArrayList<Receipt> receiptsArrayList) {
-        this.receiptsArrayList = receiptsArrayList;
+        this.first_Name = first_Name;
+        this.last_Name = last_Name;
+        this.receipts = receipts;
     }
 
     public String getAddress() {
@@ -67,50 +38,57 @@ public class User {
         this.email = email;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFirst_Name() {
+        return first_Name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFirst_Name(String first_Name) {
+        this.first_Name = first_Name;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getLast_Name() {
+        return last_Name;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLast_Name(String last_Name) {
+        this.last_Name = last_Name;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getPhone_Number() {
+        return phone_Number;
     }
 
-    public String setPhoneNumber(String phoneNumber) {
-        if(phoneNumber.length() == 0 || phoneNumber.length() > 10){
-            return this.phoneNumber = null;
+    public void setPhone_Number(String phone_Number) {
+        if(phone_Number.length() == 0 || phone_Number.length() > 10){
+            this.phone_Number = null;
         }
         String prefix = "1-";
         String formattedPhoneNumber = prefix
-                + phoneNumber.substring( 0,3 )
+                + phone_Number.substring( 0,3 )
                 + "-"
-                + phoneNumber.substring( 3,6 )
+                + phone_Number.substring( 3,6 )
                 + "-"
-                + phoneNumber.substring( 6,10 );
-        return this.phoneNumber = formattedPhoneNumber;
+                + phone_Number.substring( 6,10 );
+        this.phone_Number = phone_Number;
+    }
+
+    public ArrayList<Receipt> getReceipts() {
+        return receipts;
+    }
+
+    public void setReceipts(ArrayList<Receipt> receipts) {
+        this.receipts = receipts;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "userId='" + userId + '\'' +
                 ", address='" + address + '\'' +
                 ", email='" + email + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", receiptsArrayList=" + receiptsArrayList +
+                ", first_Name='" + first_Name + '\'' +
+                ", last_Name='" + last_Name + '\'' +
+                ", phone_Number='" + phone_Number + '\'' +
+                ", receipts=" + receipts +
                 '}';
     }
 }
