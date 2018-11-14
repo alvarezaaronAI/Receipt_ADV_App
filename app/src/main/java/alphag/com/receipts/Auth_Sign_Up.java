@@ -89,7 +89,8 @@ public class Auth_Sign_Up extends AppCompatActivity {
                     User userTemp = new User(firstNameTemp,lastNameTemp,emailTemp,receiptsTemp);
 
                     //Store User onto a Firebase database
-                    mUsersRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    mUsersRef.child(user.getUid())
                             .setValue(userTemp)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
