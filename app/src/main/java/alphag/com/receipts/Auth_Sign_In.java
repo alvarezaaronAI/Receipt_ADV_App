@@ -1,8 +1,6 @@
 package alphag.com.receipts;
 
 import android.content.Intent;
-import android.service.autofill.UserData;
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,16 +15,16 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import alphag.com.receipts.Utils.FirebaseAuthenticationUtils;
-
 public class Auth_Sign_In extends AppCompatActivity {
     //Log Cat 
     private static final String TAG = "Auth_Sign_In";
     //Member Variables
     EditText mEmailSignIn;
     EditText mPassWordIn;
+
     //Firebase Authentication
     FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -103,7 +103,6 @@ public class Auth_Sign_Up extends AppCompatActivity {
         });
     }
     //If they are already signed in, then proceed to the app.
-
     //Todo : Make a method that checks for errors in name;
 
 }
