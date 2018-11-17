@@ -1,10 +1,18 @@
 package alphag.com.receipts;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -13,7 +21,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
+
 public class UserHome extends AppCompatActivity {
+    //Log Cat
+    private static final String TAG = "UserHome";
     //References
     TextView mUsersData;
     //Firebase Authentication
@@ -21,14 +33,19 @@ public class UserHome extends AppCompatActivity {
     //Firebase Database
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     DatabaseReference mUsersRef = mRootRef.child("users");
+    //FireBase Utils
+    FireBaseDataBaseUtils mFireBaseDBUtils;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_home);
         //Set References
         mUsersData = (TextView) findViewById(R.id.tv_users_data);
+        mFireBaseDBUtils = new FireBaseDataBaseUtils();
 
+        //FireBase Authentication Instance
         mAuth = FirebaseAuth.getInstance();
+        Log.d(TAG, "onCreate: " + (mAuth.getUid()));
     }
 
     @Override
@@ -46,7 +63,8 @@ public class UserHome extends AppCompatActivity {
         userRootRef.addValueEventListener(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               mUsersData.append(dataSnapshot.getValue() + "\n");
+               mUsersData.setText(dataSnapshot.getValue() + "\n");
+               Toast.makeText(UserHome.this, "User Data was Appended", Toast.LENGTH_SHORT).show();
            }
 
            @Override
@@ -54,5 +72,16 @@ public class UserHome extends AppCompatActivity {
 
            }
        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FirebaseAuth.getInstance().signOut();
+    }
+
+    public void change_name(View v) {
+        FirebaseUser userTemp = mAuth.getCurrentUser();
+        mFireBaseDBUtils.modified_User_Last_Name(userTemp,"Granados");
     }
 }

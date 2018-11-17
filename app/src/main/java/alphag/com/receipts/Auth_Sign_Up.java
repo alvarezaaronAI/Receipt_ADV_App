@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
 import alphag.com.receipts.models.Receipt;
 import alphag.com.receipts.models.User;
 
@@ -87,23 +88,15 @@ public class Auth_Sign_Up extends AppCompatActivity {
                     receiptsTemp.add(receiptTemp);
                     //Creating User data
                     User userTemp = new User(firstNameTemp,lastNameTemp,emailTemp,receiptsTemp);
-
-                    //Store User onto a Firebase database
+                    //Getting current User
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    mUsersRef.child(user.getUid())
-                            .setValue(userTemp)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()){
-                                Toast.makeText(Auth_Sign_Up.this, "Created New Account : " + firstNameTemp , Toast.LENGTH_LONG).show();
-                            }else{
-                                Toast.makeText(Auth_Sign_Up.this, "Failed to Add New Account", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
+
+                    //Adding user to Database
+                    new FireBaseDataBaseUtils().add_New_User_DataBase(user,userTemp);
+                    Log.d(TAG, "onComplete: Success : To Create a new user.");
                 }
                 else{
+                    Log.d(TAG, "onComplete: Failed : To create a new user.");
                     Toast.makeText(Auth_Sign_Up.this, "Failed to Create Special Token", Toast.LENGTH_SHORT).show();
                 }
             }

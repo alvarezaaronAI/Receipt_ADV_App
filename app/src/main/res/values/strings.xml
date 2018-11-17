@@ -15,4 +15,13 @@
     <string name="hint_last_name">Last Name</string>
     <string name="match_password">Match Password</string>
     <string name="create_new_account">Create New Account</string>
+    <string name="sign_out">Sign Out</string>
+
+    <!--
+    Firebase Data Base Default keys
+    -->
+    <string name="fireBase_database_first_name">first_name</string>
+    <string name="fireBase_database_last_name">last_name</string>
+    <string name="fireBase_database_phone">phone</string>
+    <string name="fireBase_database_email">email</string>
 </resources>
