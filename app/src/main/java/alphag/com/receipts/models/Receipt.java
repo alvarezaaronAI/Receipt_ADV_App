@@ -3,6 +3,7 @@ package alphag.com.receipts.models;
 import android.graphics.Bitmap;
 
 public class Receipt {
+
     private String longitude;
     private String latitude;
     private String address;

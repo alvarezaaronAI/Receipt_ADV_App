@@ -1,4 +1,4 @@
-package alphag.com.receipts;
+package alphag.com.receipts.Utils;
 
 import android.util.Log;
 

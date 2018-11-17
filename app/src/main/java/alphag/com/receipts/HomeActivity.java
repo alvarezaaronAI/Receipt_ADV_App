@@ -3,10 +3,18 @@ package alphag.com.receipts;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
+
 public class HomeActivity extends AppCompatActivity {
+    //Log Cat
+    private static final String TAG = "HomeActivity";
     //-Member Variables-
     Button mButton_Camera;
     //----------------
@@ -26,5 +34,27 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(HomeActivity.this, CameraDetect.class);
         //Start the Intent.
         startActivity(intent);
+    }
+
+    public void sign_Up_Home_Handler(View view) {
+        Intent intent = new Intent(HomeActivity.this, Auth_Sign_Up.class);
+        //Start the Intent.
+        startActivity(intent);
+    }
+
+    public void sign_In_Home_Handler(View view) {
+        Intent intent = new Intent(HomeActivity.this, Auth_Sign_In.class);
+        //Start the Intent.
+        startActivity(intent);
+    }
+
+    public void firebase_database_delete_user_Handler(View view) {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        if (mAuth.getUid() != null ) {
+            Log.d(TAG, "firebase_database_delete_user_Handler: Current user is : " + (mAuth.getUid()));
+            FirebaseUser userTemp = mAuth.getCurrentUser();
+            new FireBaseDataBaseUtils().delete_User_DataBase(userTemp);
+            Log.d(TAG, "firebase_database_delete_user_Handler: Current User is : " + (mAuth.getUid()));
+        }
     }
 }
