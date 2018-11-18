@@ -32,29 +32,6 @@ public class ParseUtils {
         return maxPrice;
     }
 
-//    public static String getAddressFromReceipt(String address){
-//        // Assume that a non perfect address string can still pass for google places does a good job
-//        // going through the real address
-//        String streetAbbreviations[] = {"st", "street", "ave", "avenue", "blvd", "boulevard", "dr", "drive"};
-//        String reduceStringToAddress[] = address.toLowerCase().split("[^\\d]+[^A-Za-z0-9\\s,.]+");
-//        // OR TRY
-//        // String reduceStringToAddress[] = x.split("[^\\d]+[^A-Za-z0-9\\s,.]+");
-//        Log.d("ADDRESS", "getAddressFromReceipt: " + Arrays.toString(reduceStringToAddress));
-//        String finalString = null;
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
-//            finalString = String.join(" ", reduceStringToAddress);
-//
-//        for (int i = 0; i < streetAbbreviations.length; i++) {
-//            String street = streetAbbreviations[i];
-//            if (address.contains(street)) {
-//                if (reduceStringToAddress[i].matches("[^\\d]+[^A-Za-z0-9\\s,.]+")) {
-//                    Log.d("ADDRESS", "MATCH: " + reduceStringToAddress[i]);
-//                    return reduceStringToAddress[i];
-//                }
-//            }
-//        }
-//        return null;
-//    }
 
     public static String getAddressFromReceipt(String address){
         String addressRegex = "[^\\d]+[^A-Za-z0-9\\s,.]+";
@@ -68,9 +45,18 @@ public class ParseUtils {
                     || filteredString.contains("ave") || filteredString.contains("avenue")
                     || filteredString.contains("blvd") || filteredString.contains("boulevard")
                     || filteredString.contains("dr") || filteredString.contains("drive"))
-
-                //Log.d("TEST", "MATCH: " + filteredString);
                 return filteredString;
+        }
+        return null;
+    }
+
+    public static String getDateFromReceipt(String date){
+        String dateRegex = "^(0[1-9]|1[0-2])/^(0[1-9]|1\\d|2\\d|3[01])/^(\\d{4}|\\d{2})";
+        if (date.contains("/")) {
+            String reduceStringToDate[] = date.toLowerCase().split(dateRegex);
+            date = reduceStringToDate[0];
+            Log.d("DATE", "getDateFromReceipt: " + Arrays.toString(reduceStringToDate));
+            return date;
         }
         return null;
     }
