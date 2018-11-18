@@ -10,7 +10,7 @@ import android.widget.ImageButton;
 
 public class HomeActivity extends AppCompatActivity {
     //-Member Variables-
-    Button mButton_Camera;
+    ImageButton mButton_Camera;
     String TAG = "Camera button";
     //----------------
     @Override

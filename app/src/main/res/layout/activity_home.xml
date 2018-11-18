@@ -3,9 +3,10 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-
-    android:background="@drawable/receipts_recyclerview_border">
+    android:background="@drawable/receipts_recyclerview_border"
+    tools:context=".HomeActivity">
 
 
     <android.support.v7.widget.RecyclerView
@@ -20,14 +21,15 @@
         android:background="@drawable/receipts_recyclerview_border" />
 
 
-    <Button
+    <ImageButton
         android:id="@+id/camera_button"
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:src="@mipmap/receipt_icon"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="25dp" />
+        android:layout_marginBottom="25dp"
+        android:onClick="camera_button"/>
 
 
 </RelativeLayout>
