@@ -11,14 +11,11 @@ import android.widget.ImageButton;
 public class HomeActivity extends AppCompatActivity {
     //-Member Variables-
     ImageButton mButton_Camera;
-    String TAG = "Camera button";
     //----------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        Log.d(TAG, "camera activate ");
 
         mButton_Camera =  findViewById(R.id.camera_button);
     }

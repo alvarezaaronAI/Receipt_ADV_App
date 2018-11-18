@@ -3,9 +3,9 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/graident_background"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="@drawable/receipts_recyclerview_border"
     tools:context=".HomeActivity">
 
 
@@ -14,7 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/camera_button"
-
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
@@ -25,7 +24,7 @@
         android:id="@+id/camera_button"
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:src="@mipmap/receipt_icon"
+        android:src="@mipmap/receipt_icon2_round"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="25dp"
