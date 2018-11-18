@@ -3,16 +3,16 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="60dp"
     android:orientation="vertical"
 
     android:background="@drawable/receipts_recyclerview_border">
 
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/news_recyclerview"
-        android:layout_width="260dp"
-        android:layout_height="420dp"
+        android:id="@+id/rv_receipts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/camera_button"
 
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
@@ -20,7 +20,7 @@
         android:background="@drawable/receipts_recyclerview_border" />
 
 
-    <ImageButton
+    <Button
         android:id="@+id/camera_button"
         android:layout_width="75dp"
         android:layout_height="75dp"
