@@ -189,27 +189,7 @@ public class FireBaseDataBaseUtils {
         }
     }
 
-
-    //Users Data Retrival DataBase
-
-    /**
-     * Retrieves the email of the current user. His email authentication.
-     * @param user Current User
-     * @return String value email.
-     */
-    //Done : Create Method : Retrieves : Email
-    public String retrieve_User_Email(@NonNull FirebaseUser user){
-        String userUID = user.getUid();
-        if(userUID != null){
-            return user.getEmail();
-        }
-        return null;
-    }
-    //Todo : Create Method : Retrieves : First Name
-    //Todo : Create Method : Retrieves : Last Name
-    //Todo : Create Method : Retrieves : Receipts (If any)
-    //Todo : Create Method : Retrieves : Specific Receipt (Given a Receipts Id)
-
+    
     //Action Methods User Authentication
     //Todo : Create Method : Delete User
     //Todo : Create Method : Re-authenticate User
