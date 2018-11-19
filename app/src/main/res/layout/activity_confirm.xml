@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/graident_background">
+
+    <TextView
+        android:id="@+id/tv_confirmTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirm receipt details"
+        android:layout_above="@id/img_confirmReceipt"
+        android:layout_alignParentTop="true"
+        android:textSize="25sp"
+        />
+
+    <ImageView
+        android:id="@+id/img_confirmReceipt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:paddingTop="10dp"
+        android:src="@mipmap/receipt_icon2_round"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_below="@id/img_confirmReceipt"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true" />
+
+        <TextView
+            android:id="@+id/tv_confirmLocation"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_below="@id/img_confirmReceipt"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="Location: "
+            android:textSize="20sp"
+            android:textColor="@android:color/white"/>
+
+        <EditText
+            android:id="@+id/et_location"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="El Pollo Loco"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:layout_below="@id/img_confirmReceipt"
+            android:layout_toRightOf="@id/tv_confirmLocation">
+        </EditText>
+
+    <TextView
+        android:id="@+id/tv_confirmDate"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/tv_confirmLocation"
+        android:paddingTop="25dp"
+        android:paddingRight="48dp"
+        android:layout_marginLeft="10dp"
+        android:text="Date: "
+        android:textSize="20sp"
+        android:textColor="@android:color/white"/>
+
+    <EditText
+        android:id="@+id/et_date"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="11 - 18 - 2018"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        android:layout_below="@id/et_location"
+        android:layout_toRightOf="@id/tv_confirmDate">
+    </EditText>
+
+    <TextView
+        android:id="@+id/tv_confirmPrice"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/tv_confirmDate"
+        android:paddingTop="25dp"
+        android:paddingRight="48dp"
+        android:layout_marginLeft="10dp"
+        android:text="Price: "
+        android:textSize="20sp"
+        android:textColor="@android:color/white"/>
+
+    <EditText
+        android:id="@+id/et_price"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="$40.00"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        android:layout_below="@id/et_date"
+        android:layout_toRightOf="@id/tv_confirmDate">
+    </EditText>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/button_round"
+        android:text="Confirm"/>
+
+
+
+
+</RelativeLayout>
