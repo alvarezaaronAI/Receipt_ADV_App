@@ -15,7 +15,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_confirm_constraint);
 
         mButton_Camera =  findViewById(R.id.camera_button);
     }
