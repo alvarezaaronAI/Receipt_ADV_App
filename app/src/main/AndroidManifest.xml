@@ -45,7 +45,8 @@
 
         <activity android:name=".Auth_Sign_In" />
         <activity android:name=".Auth_Sign_Up" />
-        <activity android:name=".UserHome"></activity>
+        <activity android:name=".UserHome" />
+        <activity android:name=".TodayActivity"/>
     </application>
 
 </manifest>

@@ -24,4 +24,16 @@
     <string name="fireBase_database_last_name">last_name</string>
     <string name="fireBase_database_phone">phone</string>
     <string name="fireBase_database_email">email</string>
+
+    <!--
+    String array days
+    -->
+    <string-array name="days">
+        <item>All</item>
+        <item>Today</item>
+        <item>7 Days</item>
+        <item>14 Days</item>
+        <item>Month</item>
+    </string-array>
+    <string name="title_activity_test">TestActivity</string>
 </resources>

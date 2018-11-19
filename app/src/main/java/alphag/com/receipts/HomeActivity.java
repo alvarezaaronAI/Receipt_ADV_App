@@ -17,6 +17,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
     //-Member Variables-
     Button mButton_Camera;
+    Button mtoday;
     //----------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +25,16 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         mButton_Camera = findViewById(R.id.camera_button);
+        mtoday = findViewById(R.id.today);
+
+        mtoday.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, TodayActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
     /*
         This method goes to the next Activity, CAMERADETECT.
@@ -57,4 +68,6 @@ public class HomeActivity extends AppCompatActivity {
             Log.d(TAG, "firebase_database_delete_user_Handler: Current User is : " + (mAuth.getUid()));
         }
     }
+
+
 }
