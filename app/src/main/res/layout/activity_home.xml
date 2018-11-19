@@ -66,5 +66,10 @@
         android:text="Delete Current User"
         android:onClick="firebase_database_delete_user_Handler"
         />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/today"
+        android:text="today" />
 
 </LinearLayout>
