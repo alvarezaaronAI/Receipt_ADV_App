@@ -39,6 +39,22 @@
           }
         },
         {
+          "client_id": "714739058084-amjv8j97ivbhjnreocrdc7i2mnaaufs1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "alphag.com.receipts",
+            "certificate_hash": "f628229a1541aeeb7600f9691c024343cfcba612"
+          }
+        },
+        {
+          "client_id": "714739058084-302oknoc9hjlbn7hg9rf6btfeeu99r5n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "alphag.com.receipts",
+            "certificate_hash": "60533ffad0c526a9689943bb77bfc387e9712080"
+          }
+        },
+        {
           "client_id": "714739058084-f2rnpjkd5v7psc2edek1qtakb2ifb705.apps.googleusercontent.com",
           "client_type": 3
         }
