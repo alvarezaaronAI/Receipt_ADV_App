@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/graident_background">
+
+
+    <ImageView
+        android:id="@+id/img_viewImage"
+        android:layout_width="259dp"
+        android:layout_height="244dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/image_view_border"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHeight_percent=".4"
+        tools:srcCompat="@tools:sample/backgrounds/scenic[15]" />
+
+    <TextView
+        android:id="@+id/tv_receipt_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="32dp"
+        android:text="El Pollo Loco"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/img_viewImage"
+        app:layout_constraintTop_toBottomOf="@+id/img_viewImage" />
+
+    <TextView
+        android:id="@+id/tv_receipt_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
+        android:text="11/19/18"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/tv_receipt_location"
+        app:layout_constraintTop_toBottomOf="@+id/tv_receipt_location" />
+
+    <TextView
+        android:id="@+id/tv_receipt_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="$5.48"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="@+id/tv_receipt_date"
+        app:layout_constraintTop_toBottomOf="@+id/tv_receipt_date" />
+
+    <Button
+        android:id="@+id/et_receipt_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="436dp"
+        android:layout_marginEnd="16dp"
+        android:text="Edit"
+        android:background="@drawable/button_round"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>
