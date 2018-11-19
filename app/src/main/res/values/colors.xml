@@ -2,14 +2,13 @@
 <resources>
     <color name="colorPrimary">#ff515d</color>
     <color name="colorPrimaryDark">#c50a33</color>
-    <color name="colorPrimaryLight">#c50a33</color>
     <color name="colorAccent">#ff868a</color>
-
     <color name="colorSecondary">#51b4ff</color>
     <color name="colorSecondaryDark">#0085cb</color>
+
     <color name="colorSecondaryLight">#8de6ff</color>
 
-    <color name="colorThird">#51ff9cf</color>
+    <color name="colorThird">#51ff9c</color>
     <color name="colorThirdDark">#00cb6d</color>
     <color name="colorThirdLight">#8effce</color>
 
