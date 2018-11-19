@@ -23,7 +23,7 @@
         android:padding="16dp">
 
         <EditText
-            android:id="@+id/et_first_name_sign_up"
+            android:id="@+id/et_firs t_name_sign_up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-condensed"
