@@ -3,35 +3,92 @@ package alphag.com.receipts.models;
 import java.util.ArrayList;
 
 public class User {
-    private String userId;
-    private ArrayList<Receipt> receiptsArrayList;
+    private String address;
+    private String email;
+    private String first_Name;
+    private String last_Name;
+    private String phone_Number;
+    private ArrayList<Receipt> receipts;
 
-    public User(String userId, ArrayList<Receipt> receiptsArrayList) {
-        this.userId = userId;
-        this.receiptsArrayList = receiptsArrayList;
+    public User(String first_Name, String last_Name,String email) {
+        this.email = email;
+        this.first_Name = first_Name;
+        this.last_Name = last_Name;
+    }
+    public User(String first_Name, String last_Name,String email, ArrayList<Receipt> receipts) {
+        this.email = email;
+        this.first_Name = first_Name;
+        this.last_Name = last_Name;
+        this.receipts = receipts;
     }
 
-    public ArrayList<Receipt> getReceiptsArrayList() {
-        return receiptsArrayList;
+    public String getAddress() {
+        return address;
     }
 
-    public String getUserId() {
-        return userId;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public String getEmail() {
+        return email;
     }
 
-    public void setReceiptsArrayList(ArrayList<Receipt> receiptsArrayList) {
-        this.receiptsArrayList = receiptsArrayList;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFirst_Name() {
+        return first_Name;
+    }
+
+    public void setFirst_Name(String first_Name) {
+        this.first_Name = first_Name;
+    }
+
+    public String getLast_Name() {
+        return last_Name;
+    }
+
+    public void setLast_Name(String last_Name) {
+        this.last_Name = last_Name;
+    }
+
+    public String getPhone_Number() {
+        return phone_Number;
+    }
+
+    public void setPhone_Number(String phone_Number) {
+        if(phone_Number.length() == 0 || phone_Number.length() > 10){
+            this.phone_Number = null;
+        }
+        String prefix = "1-";
+        String formattedPhoneNumber = prefix
+                + phone_Number.substring( 0,3 )
+                + "-"
+                + phone_Number.substring( 3,6 )
+                + "-"
+                + phone_Number.substring( 6,10 );
+        this.phone_Number = phone_Number;
+    }
+
+    public ArrayList<Receipt> getReceipts() {
+        return receipts;
+    }
+
+    public void setReceipts(ArrayList<Receipt> receipts) {
+        this.receipts = receipts;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "userId=" + userId +
-                ", receiptsArrayList=" + receiptsArrayList +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                ", first_Name='" + first_Name + '\'' +
+                ", last_Name='" + last_Name + '\'' +
+                ", phone_Number='" + phone_Number + '\'' +
+                ", receipts=" + receipts +
                 '}';
     }
 }

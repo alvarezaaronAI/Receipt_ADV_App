@@ -27,22 +27,18 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
-import com.google.firebase.ml.vision.document.FirebaseVisionDocumentText;
-import com.google.firebase.ml.vision.document.FirebaseVisionDocumentTextRecognizer;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import alphag.com.receipts.Utils.ParseUtils;
 
 public class CameraDetect extends AppCompatActivity {
     //Member Variables.
@@ -218,6 +214,7 @@ public class CameraDetect extends AppCompatActivity {
         double maxPrice = -1;
         double cleanedNumber;
         String readErrorMessage = "Please Take Photo Again";
+        String address = null;
 
         // Base case for reading empty block
         List<FirebaseVisionText.TextBlock> blocks = firebaseVisionText.getTextBlocks();
@@ -229,6 +226,14 @@ public class CameraDetect extends AppCompatActivity {
         // Read block by block
         for (FirebaseVisionText.TextBlock block : firebaseVisionText.getTextBlocks() ){
             List<FirebaseVisionText.Line> lines = block.getLines();
+
+            // Look for address in block
+            if(address == null) {
+                address = ParseUtils.getAddressFromReceipt(block.getText());
+                //Log.d("ADDRESS", "Address: " + address);
+            }
+
+            Log.d("ADDRESS", "process_text: " + address);
 
             // Read each line in current block
             for (int i = 0; i < lines.size(); i++) {
