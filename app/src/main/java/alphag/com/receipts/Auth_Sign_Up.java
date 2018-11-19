@@ -63,46 +63,95 @@ public class Auth_Sign_Up extends AppCompatActivity {
     }
     //This should make a new account and put in the database
     public void create_New_Account_Handler(View view) {
+        // changed email from final to not final String
         final String firstNameTemp = mFirstName.getText().toString().trim();
         final String lastNameTemp = mLastName.getText().toString().trim();
-        final String emailTemp = mEmail.getText().toString().trim();
+        String emailTemp = mEmail.getText().toString().trim();
         String passWordTemp = mPassWord.getText().toString().trim();
         String passWordMatchTemp = mPassWordMatch.getText().toString().trim();
         //Todo : Authenticate First, Last , Email , PassWord, and Password Match Cases
-            //Write method called field_Authenticate_Users
-        //Assuming All fields are correct
-        mAuth.createUserWithEmailAndPassword(emailTemp,passWordTemp).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
+        validate(firstNameTemp, lastNameTemp, emailTemp, passWordTemp, passWordMatchTemp);
 
-                    Receipt receiptTemp = new Receipt(
-                            "1234",
-                            "5678",
-                            "My new Address",
-                            "11/12/2018",
-                            null,
-                            13.45);
+    }
 
-                    ArrayList<Receipt> receiptsTemp = new ArrayList<>();
-                    receiptsTemp.add(receiptTemp);
-                    //Creating User data
-                    User userTemp = new User(firstNameTemp,lastNameTemp,emailTemp,receiptsTemp);
-                    //Getting current User
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    public void validate(String firstNameTemp, String lastNameTemp, String emailTemp,
+                         String passWordTemp, String passWordMatchTemp){
+        try{
+            final String validFirstName = validateName(firstNameTemp);
+            final String validLastName = validateName(lastNameTemp);
+            final String validEmail = validateEmail(emailTemp);
+            final String validPassword = validatePassword(passWordTemp, passWordMatchTemp);
 
-                    //Adding user to Database
-                    new FireBaseDataBaseUtils().add_New_User_DataBase(user,userTemp);
-                    Log.d(TAG, "onComplete: Success : To Create a new user.");
+            mAuth.createUserWithEmailAndPassword(validEmail,validPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(task.isSuccessful()){
+
+                        Receipt receiptTemp = new Receipt(
+                                "1234",
+                                "5678",
+                                "My new Address",
+                                "11/12/2018",
+                                null,
+                                13.45);
+
+                        ArrayList<Receipt> receiptsTemp = new ArrayList<>();
+                        receiptsTemp.add(receiptTemp);
+                        //Creating User data
+                        User userTemp = new User(validFirstName,validLastName,validEmail,receiptsTemp);
+                        //Getting current User
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                        //Adding user to Database
+                        new FireBaseDataBaseUtils().add_New_User_DataBase(user,userTemp);
+                        Log.d(TAG, "onComplete: Success : To Create a new user.");
+                    }
+                    else{
+                        Log.d(TAG, "onComplete: Failed : To create a new user.");
+                        Toast.makeText(Auth_Sign_Up.this, "Failed to Create Special Token", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                else{
-                    Log.d(TAG, "onComplete: Failed : To create a new user.");
-                    Toast.makeText(Auth_Sign_Up.this, "Failed to Create Special Token", Toast.LENGTH_SHORT).show();
+            });
+        } catch (Exception e){
+            emailTemp = null;
+            passWordTemp = null;
+            Log.d(TAG, "create_New_Account_Handler: INSIDE CATCH --> " + e);
+        }
+    }
+
+    public String validateName(String name){
+        if(name != null || name != ""){
+            for(int i = 0 ; i < name.length() ; i++){
+                if(Character.isLetter(i)){
+                    name = name.substring(0, 1).toUpperCase() +
+                            name.substring(1, name.length());
+                    Toast.makeText(this, "NAME: " + name, Toast.LENGTH_SHORT).show();
+
+                }else{
+                    return null;
                 }
             }
-        });
+        }
+        return null;
     }
-    //If they are already signed in, then proceed to the app.
-    //Todo : Make a method that checks for errors in name;
+
+    public String validateEmail(String email){
+        if (email != null && email.contains("@") && email.contains(".")){
+            return email;
+        }
+        Toast.makeText(this, "Invalid Email", Toast.LENGTH_SHORT).show();
+        return null;
+    }
+
+
+    public final int MIN_PASS_LENGTH = 6;
+    public String validatePassword(String password, String reenteredPassword){
+        if(password.length() >= MIN_PASS_LENGTH && password.equals(reenteredPassword)){
+            return password;
+        }
+        Log.d(TAG, "validatePassword: CHECK PASSWORD");
+        Toast.makeText(this, "Check Password", Toast.LENGTH_SHORT).show();
+        return null;
+    }
 
 }

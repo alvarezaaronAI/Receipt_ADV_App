@@ -15,6 +15,46 @@
       },
       "oauth_client": [
         {
+          "client_id": "714739058084-45tankmkd8h7u42f4kqksec9dfidls5h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "alphag.com.receipts",
+            "certificate_hash": "28f5da6c2f165d4b04a53f18f4ca0efc996f0ae2"
+          }
+        },
+        {
+          "client_id": "714739058084-rcm655qd3n7cje08ngdi3c61gu88ao99.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "alphag.com.receipts",
+            "certificate_hash": "07284da614a7f399c5be6a0d0f8a94c4fe117c69"
+          }
+        },
+        {
+          "client_id": "714739058084-aekl4rfntofucire289o42g0h82f8su3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "alphag.com.receipts",
+            "certificate_hash": "97e1bc058174245051dd291c7c46ca7be567db2f"
+          }
+        },
+        {
+          "client_id": "714739058084-amjv8j97ivbhjnreocrdc7i2mnaaufs1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "alphag.com.receipts",
+            "certificate_hash": "f628229a1541aeeb7600f9691c024343cfcba612"
+          }
+        },
+        {
+          "client_id": "714739058084-302oknoc9hjlbn7hg9rf6btfeeu99r5n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "alphag.com.receipts",
+            "certificate_hash": "60533ffad0c526a9689943bb77bfc387e9712080"
+          }
+        },
+        {
           "client_id": "714739058084-f2rnpjkd5v7psc2edek1qtakb2ifb705.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +69,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "714739058084-f2rnpjkd5v7psc2edek1qtakb2ifb705.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
