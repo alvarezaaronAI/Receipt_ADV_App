@@ -1,9 +1,16 @@
 package alphag.com.receipts.Utils;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Set;
 
 public class ParseUtils {
@@ -32,29 +39,6 @@ public class ParseUtils {
         return maxPrice;
     }
 
-//    public static String getAddressFromReceipt(String address){
-//        // Assume that a non perfect address string can still pass for google places does a good job
-//        // going through the real address
-//        String streetAbbreviations[] = {"st", "street", "ave", "avenue", "blvd", "boulevard", "dr", "drive"};
-//        String reduceStringToAddress[] = address.toLowerCase().split("[^\\d]+[^A-Za-z0-9\\s,.]+");
-//        // OR TRY
-//        // String reduceStringToAddress[] = x.split("[^\\d]+[^A-Za-z0-9\\s,.]+");
-//        Log.d("ADDRESS", "getAddressFromReceipt: " + Arrays.toString(reduceStringToAddress));
-//        String finalString = null;
-//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O)
-//            finalString = String.join(" ", reduceStringToAddress);
-//
-//        for (int i = 0; i < streetAbbreviations.length; i++) {
-//            String street = streetAbbreviations[i];
-//            if (address.contains(street)) {
-//                if (reduceStringToAddress[i].matches("[^\\d]+[^A-Za-z0-9\\s,.]+")) {
-//                    Log.d("ADDRESS", "MATCH: " + reduceStringToAddress[i]);
-//                    return reduceStringToAddress[i];
-//                }
-//            }
-//        }
-//        return null;
-//    }
 
     public static String getAddressFromReceipt(String address){
         String addressRegex = "[^\\d]+[^A-Za-z0-9\\s,.]+";
@@ -68,10 +52,25 @@ public class ParseUtils {
                     || filteredString.contains("ave") || filteredString.contains("avenue")
                     || filteredString.contains("blvd") || filteredString.contains("boulevard")
                     || filteredString.contains("dr") || filteredString.contains("drive"))
-
-                //Log.d("TEST", "MATCH: " + filteredString);
                 return filteredString;
         }
         return null;
     }
+
+    public static String getDateFromReceipt(String date){
+        String dateRegex = "([1-9]|0[1-9]|1[0-2])/([1-9]|0[1-9]|1\\d|2\\d|3[01])/(\\d{4}|\\d{2})";
+        String finalDate = null;
+        if (date.contains("/")) {
+            String reduceStringToDate[] = date.split(" ");
+            for (String group : reduceStringToDate) {
+                if (group.matches(dateRegex)) {
+                    finalDate = group;
+                    break; // Breaks loop as soon as first date is seen to avoid "expiration date"
+                }
+            }
+            return finalDate;
+        }
+        return null;
+    }
+
 }
