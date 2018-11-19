@@ -232,16 +232,18 @@ public class CameraDetect extends AppCompatActivity {
                 address = ParseUtils.getAddressFromReceipt(block.getText());
                 //Log.d("ADDRESS", "Address: " + address);
             }
-            if(date == null){
-                date = ParseUtils.getDateFromReceipt(block.getText());
-            }
+//            if(date == null){
+//                date = ParseUtils.getDateFromReceipt(block.getText());
+//            }
             //Log.d("DATE", "process_text: " + date);
             Log.d("ADDRESS", "process_text: " + address);
 
             // Read each line in current block
             for (int i = 0; i < lines.size(); i++) {
                 FirebaseVisionText.Line line = lines.get(i);
-
+                if(date == null){
+                    date = ParseUtils.getDateFromReceipt(line.getText());
+                }
                 // Attempt to read line and add number to HashSet (MUST have try, catch)
                 try{
                     ParseUtils.cleanUpStringPriceToDoublePrice(line.getText(), pricesHashSet);

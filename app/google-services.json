@@ -31,6 +31,14 @@
           }
         },
         {
+          "client_id": "714739058084-aekl4rfntofucire289o42g0h82f8su3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "alphag.com.receipts",
+            "certificate_hash": "97e1bc058174245051dd291c7c46ca7be567db2f"
+          }
+        },
+        {
           "client_id": "714739058084-f2rnpjkd5v7psc2edek1qtakb2ifb705.apps.googleusercontent.com",
           "client_type": 3
         }

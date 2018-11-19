@@ -1,9 +1,16 @@
 package alphag.com.receipts.Utils;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Set;
 
 public class ParseUtils {
@@ -51,13 +58,70 @@ public class ParseUtils {
     }
 
     public static String getDateFromReceipt(String date){
-        String dateRegex = "^(0[1-9]|1[0-2])/^(0[1-9]|1\\d|2\\d|3[01])/^(\\d{4}|\\d{2})";
+        String dateRegex = "([1-9]|0[1-9]|1[0-2])/([1-9]|0[1-9]|1\\d|2\\d|3[01])/(\\d{4}|\\d{2})";
+        String finalDate = null;
         if (date.contains("/")) {
-            String reduceStringToDate[] = date.toLowerCase().split(dateRegex);
-            date = reduceStringToDate[0];
-            Log.d("DATE", "getDateFromReceipt: " + Arrays.toString(reduceStringToDate));
-            return date;
+            String reduceStringToDate[] = date.split(" ");
+            for (String group : reduceStringToDate) {
+                if (group.matches(dateRegex)) {
+                    finalDate = group;
+                    break; // Breaks loop as soon as first date is seen to avoid "expiration date"
+                }
+            }
+            return finalDate;
         }
         return null;
+    }
+
+    public static Date parseDate(String stringDate) {
+        String pattern = "MM/dd/yyyy";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        Date date = null;
+        try {
+            date = simpleDateFormat.parse(stringDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public static Date subtractDays(Date date, int days) {
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, -days);
+        return cal.getTime();
+    }
+
+
+    public static String formatDate(Date aDate) {
+        return getMonth(aDate) + "/" + getDay(aDate) + "/" + getYear(aDate);
+    }
+
+
+    public static boolean checkRange(Date receiptDate, Date minDay){
+        return minDay.before(receiptDate) || receiptDate.after(minDay);
+    }
+
+
+    /*
+        Helper Methods
+     */
+    // +1 since the months start from 0..11
+    public static int getMonth(Date aDate) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(aDate);
+        return cal.get(Calendar.MONTH) + 1;
+    }
+
+    public static int getDay(Date aDate) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(aDate);
+        return cal.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public static int getYear(Date aDate) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(aDate);
+        return cal.get(Calendar.YEAR);
     }
 }
