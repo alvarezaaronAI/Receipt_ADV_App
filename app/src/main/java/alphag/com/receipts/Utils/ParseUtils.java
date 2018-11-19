@@ -98,8 +98,12 @@ public class ParseUtils {
     }
 
 
-    public static boolean checkRange(Date receiptDate, Date minDay){
-        return minDay.before(receiptDate) || receiptDate.after(minDay);
+    public static boolean checkRange(Date receiptDate, Date minDay, Date currDate){
+        Date rdate = subtractDays(receiptDate, -1);
+        Date currentDate = subtractDays(currDate, -1);
+//        System.out.println("rdate " + rdate);
+//        System.out.println("currdate -1" + currentDate);
+        return minDay.before(rdate) && !rdate.after(currentDate);
     }
 
 

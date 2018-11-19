@@ -232,10 +232,10 @@ public class CameraDetect extends AppCompatActivity {
                 address = ParseUtils.getAddressFromReceipt(block.getText());
                 //Log.d("ADDRESS", "Address: " + address);
             }
-//            if(date == null){
-//                date = ParseUtils.getDateFromReceipt(block.getText());
-//            }
-            //Log.d("DATE", "process_text: " + date);
+            if(date == null){
+                date = ParseUtils.getDateFromReceipt(block.getText());
+            }
+            Log.d("DATE", "process_text: " + date);
             Log.d("ADDRESS", "process_text: " + address);
 
             // Read each line in current block
