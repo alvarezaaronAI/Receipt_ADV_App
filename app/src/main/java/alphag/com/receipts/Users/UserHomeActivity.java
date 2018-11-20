@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import alphag.com.receipts.FireBaseMLK.CameraDetect;
 import alphag.com.receipts.R;
 import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
 import alphag.com.receipts.models.Receipt;
@@ -119,8 +120,8 @@ public class UserHomeActivity extends AppCompatActivity {
         mFloatingActionBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent cameraIntent = new Intent(UserHomeActivity.this,CameraDetect.class);
+                startActivity(cameraIntent);
             }
         });
 
@@ -130,11 +131,11 @@ public class UserHomeActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Intent startMain = new Intent(Intent.ACTION_MAIN);
-        startMain.addCategory(Intent.CATEGORY_HOME);
-        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(startMain);
-        finish();
+//        Intent startMain = new Intent(Intent.ACTION_MAIN);
+//        startMain.addCategory(Intent.CATEGORY_HOME);
+//        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(startMain);
+//        finish();
     }
 
     @Override

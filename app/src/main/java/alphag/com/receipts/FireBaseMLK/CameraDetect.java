@@ -43,6 +43,8 @@ import alphag.com.receipts.Users.UserHomeActivity;
 import alphag.com.receipts.Utils.ParseUtils;
 
 public class CameraDetect extends AppCompatActivity {
+    //Log Cat
+    private static final String TAG = "CameraDetect";
     //Member Variables.
     private ImageView mImageView_Camera;
     private Button mButton_Snap;
@@ -56,13 +58,7 @@ public class CameraDetect extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 1 ;
     static final int REQUEST_TAKE_PHOTO = 1;
     public final static int REQUEST_CAMERA = 3;
-    //Log Cats Variables
-    public static String DTAG ="Files";
-    public static String ITAG = "Permissions";
-    public static String DImageTag = "Images";
-    public static String FireBaseTag = "FireBase";
 
-//    public static HashMap<Integer, Double> pricesHashMap = new HashMap<>();
     public static Set<Double> pricesHashSet = new HashSet<>();
 
 
@@ -71,8 +67,6 @@ public class CameraDetect extends AppCompatActivity {
         //On Create
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_detect);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         //Set member variables.
         mImageView_Camera = findViewById(R.id.camera_image);
@@ -81,13 +75,13 @@ public class CameraDetect extends AppCompatActivity {
         mTextview_Text = findViewById(R.id.camera_text);
         //---------------------
         //Check Permissions
-        Log.i(ITAG, "Permissions State : " +permissionGranted + " On Create");
         if(!permissionGranted){
-            Log.i(ITAG, "onCreate: Went Through here");
             if(checkPermissions()){
                 permissionGranted = true;
             }
         }
+
+        camera_button_snapshot();
 
     }
 
@@ -104,23 +98,18 @@ public class CameraDetect extends AppCompatActivity {
             File photoFile = null;
             try {
                 photoFile = createImageFile();
-                Log.d(DTAG, "dispatchTakePictureIntent: " + photoFile.toString());
             } catch (IOException ex) {
                 // Error occurred while creating the File
                 ex.getStackTrace();
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                Log.d(DTAG,"Passed Photo Path Not NULL");
                 Uri photoURI = FileProvider.getUriForFile(this,
                         "alphag.com.receipts",
                         photoFile);
-                Log.d(DTAG,"Created New URI");
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-                Log.d(DTAG,"Tooked a Picture.");
             }
-            Log.d(DTAG,"Passed URI creator");
         }
     }
     @Override
@@ -164,27 +153,24 @@ public class CameraDetect extends AppCompatActivity {
      * Handles Buttons actions
      */
     //This method would handle Button Snapshot.
-    public void camera_button_snapshot(View view) {
-        Log.i(ITAG, "Permissions State : " +permissionGranted + "Method");
+    public void camera_button_snapshot() {
+        Log.i(TAG, "Permissions State : " +permissionGranted + "Method");
         if(permissionGranted) {
             dispatchTakePictureIntent();
         }
         else{
-            Intent intent = new Intent(this, UserHomeActivity.class);
-            Snackbar.make(view, "You Must Grant permissions ", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-            startActivity(intent);
+//            Intent intent = new Intent(this, UserHomeActivity.class);
+//            startActivity(intent);
         }
     }
     //This method would handle Button Detect.
-    public void camera_button_detect(View view) {
+    public void camera_button_detect() {
             detect_text();
     }
     /*
      * Handles image recognition
      */
     private void detect_text() {
-        Log.d(FireBaseTag, " " + (imageBitmap == null) );
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(imageBitmap);
         /**
         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
@@ -200,7 +186,7 @@ public class CameraDetect extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d(DTAG, "******* Failed (Are you connected to the wifi?) *********");
+                Log.d(TAG, "******* Failed (Are you connected to the wifi?) *********");
             }
         });
     }
@@ -311,7 +297,6 @@ public class CameraDetect extends AppCompatActivity {
         // Permissions Check Int val will result 0 if all permissions was granted, other wise < 0 if 1 or many permissions were denied.
         //TODO Edit a better way to check all permissions at once without needed to add.
         int permissionsCheck = permissionCheckCamera + permissionCheckReadable + permissionCheckWritable;
-        Log.i(ITAG, "checkPermissions: " + permissionsCheck);
         //Allow the user to request permissions on the spot, if he wants.
         if (permissionsCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{
