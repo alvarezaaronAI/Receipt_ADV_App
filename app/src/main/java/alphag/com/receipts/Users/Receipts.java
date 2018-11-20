@@ -1,4 +1,4 @@
-package alphag.com.receipts;
+package alphag.com.receipts.Users;
 
 public class Receipts {
 

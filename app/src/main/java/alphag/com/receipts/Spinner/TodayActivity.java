@@ -1,4 +1,4 @@
-package alphag.com.receipts;
+package alphag.com.receipts.Spinner;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import alphag.com.receipts.R;
+import alphag.com.receipts.Users.ReceiptAdapter;
+import alphag.com.receipts.Users.Receipts;
 
 public class TodayActivity extends AppCompatActivity {
 

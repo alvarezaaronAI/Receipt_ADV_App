@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#ffffff"
-    tools:context=".TodayActivity">
+    tools:context=".Spinner.TodayActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"

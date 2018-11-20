@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CameraDetect"
+            android:name=".FireBaseMLK.CameraDetect"
             android:label="@string/title_activity_camera_detect"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -43,10 +43,10 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".Auth_Sign_In" />
-        <activity android:name=".Auth_Sign_Up" />
+        <activity android:name=".Authetications.Auth_Sign_In" />
+        <activity android:name=".Authetications.Auth_Sign_Up" />
         <activity android:name=".UserHome" />
-        <activity android:name=".TodayActivity"/>
+        <activity android:name=".Spinner.TodayActivity"/>
     </application>
 
 </manifest>

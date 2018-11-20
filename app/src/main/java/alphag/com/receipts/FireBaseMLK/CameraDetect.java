@@ -1,4 +1,4 @@
-package alphag.com.receipts;
+package alphag.com.receipts.FireBaseMLK;
 
 import android.Manifest;
 import android.content.Intent;
@@ -38,6 +38,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import alphag.com.receipts.HomeActivity;
+import alphag.com.receipts.R;
 import alphag.com.receipts.Utils.ParseUtils;
 
 public class CameraDetect extends AppCompatActivity {
