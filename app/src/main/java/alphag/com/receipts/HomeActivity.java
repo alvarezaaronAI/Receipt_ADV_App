@@ -10,6 +10,10 @@ import android.widget.Button;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import alphag.com.receipts.Authetications.Auth_Sign_In;
+import alphag.com.receipts.Authetications.Auth_Sign_Up;
+import alphag.com.receipts.FireBaseMLK.CameraDetect;
+import alphag.com.receipts.Spinner.TodayActivity;
 import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
 
 public class HomeActivity extends AppCompatActivity {

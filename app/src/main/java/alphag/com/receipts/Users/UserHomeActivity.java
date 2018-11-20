@@ -1,4 +1,4 @@
-package alphag.com.receipts;
+package alphag.com.receipts.Users;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -6,6 +6,8 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+
+import alphag.com.receipts.R;
 
 public class UserHomeActivity extends AppCompatActivity {
 

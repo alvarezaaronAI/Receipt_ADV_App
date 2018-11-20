@@ -1,4 +1,4 @@
-package alphag.com.receipts;
+package alphag.com.receipts.Authetications;
 
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+import alphag.com.receipts.R;
 import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
 import alphag.com.receipts.models.Receipt;
 import alphag.com.receipts.models.User;

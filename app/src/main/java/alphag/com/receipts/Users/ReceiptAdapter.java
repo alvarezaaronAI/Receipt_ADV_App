@@ -1,4 +1,4 @@
-package alphag.com.receipts;
+package alphag.com.receipts.Users;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+
+import alphag.com.receipts.R;
 
 public class ReceiptAdapter extends RecyclerView.Adapter<ReceiptAdapter.ReceiptViewHolder> {
 

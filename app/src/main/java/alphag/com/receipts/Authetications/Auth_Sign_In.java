@@ -1,4 +1,4 @@
-package alphag.com.receipts;
+package alphag.com.receipts.Authetications;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -14,6 +14,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import alphag.com.receipts.R;
+import alphag.com.receipts.UserHome;
 
 public class Auth_Sign_In extends AppCompatActivity {
     //Log Cat 
