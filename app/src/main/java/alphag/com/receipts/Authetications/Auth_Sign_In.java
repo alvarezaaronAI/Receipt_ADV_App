@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import alphag.com.receipts.R;
 import alphag.com.receipts.UserHome;
+import alphag.com.receipts.Users.UserHomeActivity;
 
 public class Auth_Sign_In extends AppCompatActivity {
     //Log Cat 
@@ -48,7 +49,7 @@ public class Auth_Sign_In extends AppCompatActivity {
             //Handle User Already Sign In
             Toast.makeText(Auth_Sign_In.this, "User is already logged in.",
                     Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(Auth_Sign_In.this, UserHome.class);
+            Intent intent = new Intent(Auth_Sign_In.this, UserHomeActivity.class);
             //Start the Intent.
             startActivity(intent);
         }
@@ -71,7 +72,7 @@ public class Auth_Sign_In extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            Intent intent = new Intent(Auth_Sign_In.this, UserHome.class);
+                            Intent intent = new Intent(Auth_Sign_In.this, UserHomeActivity.class);
                             //Start the Intent.
                             startActivity(intent);
 

@@ -1,5 +1,6 @@
 package alphag.com.receipts.Authetications;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 
 import alphag.com.receipts.R;
+import alphag.com.receipts.UserHome;
+import alphag.com.receipts.Users.UserHomeActivity;
 import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
 import alphag.com.receipts.models.Receipt;
 import alphag.com.receipts.models.User;
@@ -34,9 +37,6 @@ public class Auth_Sign_Up extends AppCompatActivity {
     EditText mPassWordMatch;
     //FireBase Authentication
     private FirebaseAuth mAuth;
-    //FireBase DataBase reference
-    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-    DatabaseReference mUsersRef = mRootRef.child("users");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +57,6 @@ public class Auth_Sign_Up extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         if (mAuth != null){
             //Handle User Already Sign in
-        }
-        else {
-
         }
     }
     //This should make a new account and put in the database
@@ -91,9 +88,8 @@ public class Auth_Sign_Up extends AppCompatActivity {
                         Receipt receiptTemp = new Receipt(
                                 "1234",
                                 "5678",
-                                "My new Address",
+                                "My Receipt Address",
                                 "11/12/2018",
-                                null,
                                 13.45);
 
                         ArrayList<Receipt> receiptsTemp = new ArrayList<>();
@@ -105,6 +101,11 @@ public class Auth_Sign_Up extends AppCompatActivity {
 
                         //Adding user to Database
                         new FireBaseDataBaseUtils().add_New_User_DataBase(user,userTemp);
+                        Intent intent = new Intent(Auth_Sign_Up.this, UserHomeActivity.class);
+                        //Start the Intent.
+                        startActivity(intent);
+                        //Sign in User if its Successful
+
                         Log.d(TAG, "onComplete: Success : To Create a new user.");
                     }
                     else{
