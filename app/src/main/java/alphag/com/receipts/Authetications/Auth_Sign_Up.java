@@ -14,13 +14,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 import alphag.com.receipts.R;
-import alphag.com.receipts.UserHome;
 import alphag.com.receipts.Users.UserHomeActivity;
 import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
 import alphag.com.receipts.models.Receipt;

@@ -16,7 +16,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import alphag.com.receipts.R;
-import alphag.com.receipts.UserHome;
 import alphag.com.receipts.Users.UserHomeActivity;
 
 public class Auth_Sign_In extends AppCompatActivity {

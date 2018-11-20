@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,15 +24,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import alphag.com.receipts.R;
-import alphag.com.receipts.UserHome;
 import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
-import alphag.com.receipts.Utils.JsonUtils;
 import alphag.com.receipts.models.Receipt;
-import alphag.com.receipts.models.User;
 
 public class UserHomeActivity extends AppCompatActivity {
     private static final String TAG = "UserHomeActivity";
