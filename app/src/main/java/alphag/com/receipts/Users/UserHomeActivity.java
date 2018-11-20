@@ -2,31 +2,58 @@ package alphag.com.receipts.Users;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import alphag.com.receipts.R;
 import alphag.com.receipts.UserHome;
+import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
+import alphag.com.receipts.Utils.JsonUtils;
 import alphag.com.receipts.models.Receipt;
+import alphag.com.receipts.models.User;
 
 public class UserHomeActivity extends AppCompatActivity {
+    private static final String TAG = "UserHomeActivity";
 
     Toolbar myToolBar;
     Spinner mySpinner;
     ImageButton myImageProfile;
-    ImageButton myImageMap;
+    FloatingActionButton mFloatingActionBt;
 
     RecyclerView mReceiptsRV;
     ReceiptAdapter mReceiptsAdapter;
 
+
+    //Firebase Database
+    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference mUsersRef = mRootRef.child("users");
+    //FireBase Utils
+    FireBaseDataBaseUtils mFireBaseDBUtils;
+
+    ArrayList<Receipt> mfinalReceipts = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +63,8 @@ public class UserHomeActivity extends AppCompatActivity {
         mySpinner = (Spinner) findViewById(R.id.spinner);
         myImageProfile = (ImageButton) findViewById(R.id.profileButton);
         mReceiptsRV = (RecyclerView) findViewById(R.id.rv_users_home_receipts);
+        mFloatingActionBt = (FloatingActionButton) findViewById(R.id.fab_new_receipt);
+
 
 
         ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(UserHomeActivity.this,
@@ -43,20 +72,62 @@ public class UserHomeActivity extends AppCompatActivity {
         myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mySpinner.setAdapter(myAdapter);
 
-        ArrayList<Receipt> receiptsTemp = new ArrayList<>();
-        Receipt receipt1 = new Receipt("123","345","213 Some Address","1/24/1996",13.45);
-        Receipt receipt2 = new Receipt("123","345","213 Some Address","7/24/2018",13.45);
-        Receipt receipt3 = new Receipt("123","345","213 Some Address","12/24/2018",13.45);
-        receiptsTemp.add(receipt1);
-        receiptsTemp.add(receipt2);
-        receiptsTemp.add(receipt3);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mReceiptsRV.setLayoutManager(layoutManager);
-        mReceiptsRV.setHasFixedSize(true);
 
-        mReceiptsAdapter = new ReceiptAdapter(receiptsTemp);
-        mReceiptsRV.setAdapter(mReceiptsAdapter);
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String userUId =  currentUser.getUid();
+        DatabaseReference userRootRef = mUsersRef.child(userUId);
+        DatabaseReference userReceiptRootRef = userRootRef.child("receipts");
+
+
+        userReceiptRootRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                ArrayList<Receipt> receipts = JsonUtils.parseReceipts(dataSnapshot.getValue().toString());
+//                Log.d(TAG, "onDataChange: " + receipts.get(0));
+//                ArrayList<String> addresses = JsonUtils.getAddresses(receipts);
+//
+//                for(int i = 0 ; i < addresses.size(); i++){
+//                    mAddressTv.append(addresses.get(i) + "\n");
+//                }
+                mfinalReceipts = new ArrayList<>();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Receipt receiptTemp = new Receipt(
+                            " " + snapshot.child("longitude").getValue(),
+                            " " +snapshot.child("latitude").getValue(),
+                            " " +snapshot.child("address").getValue(),
+                            " " + snapshot.child("date").getValue(),
+                            Double.valueOf(snapshot.child("total").getValue().toString()));
+                    mfinalReceipts.add(receiptTemp);
+                    Log.d(TAG, "onDataChange: " + receiptTemp.toString());
+
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(UserHomeActivity.this);
+                    mReceiptsRV.setLayoutManager(layoutManager);
+                    mReceiptsRV.setHasFixedSize(true);
+
+                    Log.d(TAG, "onCreate: " + mfinalReceipts.get(0));
+                    mReceiptsAdapter = new ReceiptAdapter(mfinalReceipts);
+                    mReceiptsRV.setAdapter(mReceiptsAdapter);
+                }
+//                User user = dataSnapshot.getValue(User.class);
+//                Log.d(TAG, "onDataChange: -----" + user.getEmail());
+
+                Toast.makeText(UserHomeActivity.this, "User Data was Appended", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        mFloatingActionBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
 
 
     }
