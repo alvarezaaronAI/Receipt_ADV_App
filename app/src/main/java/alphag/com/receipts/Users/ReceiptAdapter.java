@@ -11,40 +11,38 @@ import android.widget.TextView;
 import java.util.List;
 
 import alphag.com.receipts.R;
+import alphag.com.receipts.models.Receipt;
 
 public class ReceiptAdapter extends RecyclerView.Adapter<ReceiptAdapter.ReceiptViewHolder> {
 
-    private Context mCtx;
-    private List<Receipts> receiptsList;
-
-    public ReceiptAdapter(Context mCtx, List<Receipts> receiptsList) {
-        this.mCtx = mCtx;
-        this.receiptsList = receiptsList;
+    private List<Receipt> mReceiptsList;
+    private Context mContext;
+    public ReceiptAdapter(List<Receipt> receiptsList) {
+        this.mReceiptsList = receiptsList;
     }
 
     @Override
     public ReceiptViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        LayoutInflater inflater = LayoutInflater.from(mCtx);
+        Context context = viewGroup.getContext();
+        LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.receipt_viewholder, null);
         ReceiptViewHolder holder = new ReceiptViewHolder(view);
-
         return holder;
     }
 
     @Override
     public void onBindViewHolder(ReceiptViewHolder receiptViewHolder, int i) {
-        Receipts receipt = receiptsList.get(i);
+        Receipt receipt = mReceiptsList.get(i);
 
-        receiptViewHolder.textLocation.setText(receipt.getLocation());
+        receiptViewHolder.textLocation.setText(receipt.getAddress());
         receiptViewHolder.textDate.setText(receipt.getDate());
-        receiptViewHolder.textPrice.setText(receipt.getPrice());
-        receiptViewHolder.imageView.setImageDrawable(mCtx.getResources().getDrawable(receipt.getImage()));
+        receiptViewHolder.textPrice.setText(Double.toString(receipt.getTotal()));
 
     }
 
     @Override
     public int getItemCount() {
-        return receiptsList.size();
+        return mReceiptsList.size();
     }
 
     class ReceiptViewHolder extends RecyclerView.ViewHolder{

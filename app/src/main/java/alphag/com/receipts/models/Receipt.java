@@ -15,7 +15,7 @@ public class Receipt {
     private static int counter = 0;
     public final int receiptId;
 
-    public Receipt(String longitude, String latitude, String address, String date, Bitmap snapshot, double total) {
+    public Receipt(String longitude, String latitude, String address, String date, double total) {
         this.receiptId = counter++;
         this.longitude = longitude;
         this.latitude = latitude;

@@ -10,20 +10,19 @@ import java.util.List;
 
 import alphag.com.receipts.R;
 import alphag.com.receipts.Users.ReceiptAdapter;
-import alphag.com.receipts.Users.Receipts;
+import alphag.com.receipts.models.Receipt;
 
 public class TodayActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ReceiptAdapter adapter;
 
-    List<Receipts> receiptsList;
+    List<Receipt> receiptsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_today);
-
 
         receiptsList = new ArrayList<>();
 
@@ -31,27 +30,12 @@ public class TodayActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        receiptsList.add(
-                new Receipts(
-                        1, "Panda Express", "10/10/2018", "$12.07",
-                        R.drawable.ic_baseline_receipt_24px));
+        receiptsList.add(new Receipt("123", "456", "10/10/2018", "12/24/1996",13.40));
+        receiptsList.add(new Receipt("123", "456", "10/10/2018", "12/24/1996",13.40));
+        receiptsList.add(new Receipt("123", "456", "10/10/2018", "12/24/1996",13.40));
 
-        receiptsList.add(
-                new Receipts(
-                        2, "Panda Express", "10/10/2018", "$12.07",
-                        R.drawable.ic_baseline_receipt_24px));
 
-        receiptsList.add(
-                new Receipts(
-                        3, "Panda Express", "10/10/2018", "$12.07",
-                        R.drawable.ic_baseline_receipt_24px));
-
-        receiptsList.add(
-                new Receipts(
-                        4, "Panda Express", "10/10/2018", "$12.07",
-                        R.drawable.ic_baseline_receipt_24px));
-
-        adapter = new ReceiptAdapter(this, receiptsList);
+        adapter = new ReceiptAdapter(receiptsList);
         recyclerView.setAdapter(adapter);
     }
 
