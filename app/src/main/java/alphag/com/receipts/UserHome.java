@@ -21,7 +21,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
+import alphag.com.receipts.Utils.JsonUtils;
+import alphag.com.receipts.models.Receipt;
 
 public class UserHome extends AppCompatActivity {
     //Log Cat
@@ -63,7 +67,13 @@ public class UserHome extends AppCompatActivity {
         userRootRef.addValueEventListener(new ValueEventListener() {
            @Override
            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               mUsersData.setText(dataSnapshot.getValue() + "\n");
+               ArrayList<Receipt> receipts = JsonUtils.parseReceipts(dataSnapshot.getValue().toString());
+               ArrayList<String> addresses = JsonUtils.getAddresses(receipts);
+
+               for(int i = 0 ; i < addresses.size(); i++){
+                   mUsersData.append(addresses.get(i) + "\n");
+               }
+
                Toast.makeText(UserHome.this, "User Data was Appended", Toast.LENGTH_SHORT).show();
            }
 

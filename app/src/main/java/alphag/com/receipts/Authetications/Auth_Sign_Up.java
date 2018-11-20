@@ -88,7 +88,7 @@ public class Auth_Sign_Up extends AppCompatActivity {
                         Receipt receiptTemp = new Receipt(
                                 "1234",
                                 "5678",
-                                "My Receipt Address",
+                                "MyReceiptAddress",
                                 "11/12/2018",
                                 13.45);
 
