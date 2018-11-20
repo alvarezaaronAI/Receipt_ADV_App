@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import alphag.com.receipts.R;
@@ -34,9 +35,12 @@ public class ReceiptAdapter extends RecyclerView.Adapter<ReceiptAdapter.ReceiptV
     public void onBindViewHolder(ReceiptViewHolder receiptViewHolder, int i) {
         Receipt receipt = mReceiptsList.get(i);
 
+        DecimalFormat df = new DecimalFormat("#.##");
+        String formattedPrice = df.format(receipt.getTotal());
+
         receiptViewHolder.textLocation.setText(receipt.getAddress());
         receiptViewHolder.textDate.setText(receipt.getDate());
-        receiptViewHolder.textPrice.setText(Double.toString(receipt.getTotal()));
+        receiptViewHolder.textPrice.setText("$" + formattedPrice);
 
     }
 
