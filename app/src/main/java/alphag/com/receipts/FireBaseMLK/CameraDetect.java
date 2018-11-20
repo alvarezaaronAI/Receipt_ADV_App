@@ -38,8 +38,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import alphag.com.receipts.HomeActivity;
 import alphag.com.receipts.R;
+import alphag.com.receipts.Users.UserHomeActivity;
 import alphag.com.receipts.Utils.ParseUtils;
 
 public class CameraDetect extends AppCompatActivity {
@@ -170,7 +170,7 @@ public class CameraDetect extends AppCompatActivity {
             dispatchTakePictureIntent();
         }
         else{
-            Intent intent = new Intent(this, HomeActivity.class);
+            Intent intent = new Intent(this, UserHomeActivity.class);
             Snackbar.make(view, "You Must Grant permissions ", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
             startActivity(intent);
