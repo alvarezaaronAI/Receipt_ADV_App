@@ -6,23 +6,39 @@ import android.util.Log;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import alphag.com.receipts.models.User;
 
 public class FireBaseDataBaseUtils {
     //Log Cats
     private static final String TAG = "FireBaseDataBaseUtils";
-    //FireBase Static Key values for FireBase
+    //FireBase Static Key values for DataBase Root References
+    //User Static Keys
     final static String FIRST_NAME_KEY = "first_Name";
     final static String LAST_NAME_KEY = "last_Name";
     final static String PHONE_KEY = "phone";
     final static String EMAIL_KEY = "email";
+    //User Receipt Static Keys
+    final static String RECEIPT_NAME = "name";
+    final static String RECEIPT_ADDRESS = "address";
+    final static String RECEIPT_TOTAL = "total";
+    final static String RECEIPT_DATE = "date";
+    final static String RECEIPT_LON = "longitude";
+    final static String RECEIPT_LAT = "longitude";
+    final static String RECEIPT_IMAG = "imagescr";
+
+    //FireBase Static Key Vakyes for DataBase Root References
+    final static String USERS_KEY = "users";
+    final static String RECEIPTS_KEY = "receipts";
     //FireBase Database Root of the whole Database
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-    //FireBase Methods For App
 
+    //FireBase Parent References
     /**
      * This method will allow you to get the root of a reference.
      * @param parentRoot The Parent root of the root key.
@@ -37,23 +53,57 @@ public class FireBaseDataBaseUtils {
         Log.d(TAG, "get_Root_Reference: Failed : parent root is null");
         return null;
     }
+
     /**
      * Easy access To users key
      * @return Returns Users Database Reference
      */
     public DatabaseReference get_Users_Root(){
         if (mRootRef != null ) {
-            DatabaseReference usersRoot = get_Root_Reference(mRootRef, "users");
+            DatabaseReference usersRoot = get_Root_Reference(mRootRef, USERS_KEY);
             Log.d(TAG, "get_Users_Root: Passed : Users ID Was Found" + "users");
             return usersRoot;
         }
         Log.d(TAG, "get_Users_Root: Failed : To get Users Root - FireBase Root is Null");
         return null;
     }
+    //FireBase User Root Reference
+    /**
+     * Returns a current user root Reference.
+     * @param user
+     * @return
+     */
+    public DatabaseReference get_User_Root(@NonNull FirebaseUser user){
+        String userUID = user.getUid();
+        if (mRootRef != null ) {
+            DatabaseReference userRoot = get_Root_Reference(get_Users_Root(), userUID);
+            Log.d(TAG, "get_User_Root: Passed : To get User Root");
+            return userRoot;
+        }
+        Log.d(TAG, "get_User_Root: Failed : To get User Root - FireBase Root is Null");
+        return null;
+    }
+    /**
+     * Returns the Root Reference Current User Receipts
+     * @param user The current user.
+     * @return The Root Reference of the current user.
+     */
+    public DatabaseReference get_User_Receipts_Root(@NonNull FirebaseUser user){
+        DatabaseReference userReceiptRoot = get_User_Root(user).child(RECEIPTS_KEY);
+        Log.d(TAG, "get_User_Receipts_Root: Passed : To get User Receipt Root");
+        return userReceiptRoot;
+    }
+    /**
+     * @param user Current User
+     * @param receiptUID The UID of one receipt
+     * @return DataBase Root Reference of Current Receipt UID
+     */
+    public DatabaseReference get_User_Receipt_UID(@NonNull FirebaseUser user, String receiptUID){
+        return get_Root_Reference(get_User_Receipts_Root(user),receiptUID);
+    }
 
 
     //Action Methods To Modify DataBase
-    //Todo : Create Method : Add : User Data
     /**
      * This method would automatically add new a user onto the Firebase Database.
      * @param user This is the Firebase User Unique ID created from Firebase Authentication.
@@ -77,7 +127,6 @@ public class FireBaseDataBaseUtils {
                     });
         }
     }
-    //Todo : Create Method : Delete : User Data
     /**
      * This method would delete a user from the FireBase Database, but NOT! from authentication.
      * @param user This is the user which in we want to delete from the FireBase Database/
@@ -93,9 +142,8 @@ public class FireBaseDataBaseUtils {
 
     }
 
-
+    
     //Users Modifications
-    //Todo : Create Method : Modifies User : First Name
     /**
      * Method that will modify users first name their database
      * @param user Current User
@@ -110,7 +158,6 @@ public class FireBaseDataBaseUtils {
         }
 
     }
-    //Todo : Create Method : Modifies User : Last Name
     /**
      * Method that will modify users last name on their database
      * @param user Current User
@@ -124,7 +171,6 @@ public class FireBaseDataBaseUtils {
             usersRootTemp.child(userUiTemp).child(LAST_NAME_KEY).setValue(newLastName);
         }
     }
-    //Todo : Create Method : Adds/Modifies User : Phone Number
     /**
      * Method that will modify users phone number on their database
      * @param user Current User
@@ -138,7 +184,6 @@ public class FireBaseDataBaseUtils {
             usersRootTemp.child(userUiTemp).child(PHONE_KEY).setValue(newPhoneNumber);
         }
     }
-    //Todo : Create Method : Adds/Modifies User : Email
     /**
      * Method that will modify users email on their database
      * @param user Current User
@@ -153,13 +198,98 @@ public class FireBaseDataBaseUtils {
         }
     }
 
-
-    //Users Data Retrival DataBase
-    //Todo : Create Method : Retrieves : Email
-    //Todo : Create Method : Retrieves : First Name
-    //Todo : Create Method : Retrieves : Last Name
-    //Todo : Create Method : Retrieves : Receipts (If any)
-    //Todo : Create Method : Retrieves : Specific Receipt (Given a Receipts Id)
+    //Modify/Add Receipts (Specific Receipt)
+    /**
+     * Makes Modification for a Receipt Address
+     * @param user Current User
+     * @param receiptUID Current Receipt Unique ID
+     * @param newReceiptAddress New Address
+     */
+    public void modified_User_Receipt_Address(@NonNull FirebaseUser user, String receiptUID, String newReceiptAddress){
+        DatabaseReference userReceiptRoot = get_User_Receipt_UID(user, receiptUID);
+        if (userReceiptRoot != null) {
+            //Todo : Make sure you confirm before deleting
+            userReceiptRoot.child(RECEIPT_ADDRESS).setValue(newReceiptAddress);
+        }
+    }
+    /**
+     * Makes Modification for a Receipt Date
+     * @param user Current User
+     * @param receiptUID Current Receipt Unique ID
+     * @param newDate New Date
+     */
+    public void modified_User_Receipt_Date(@NonNull FirebaseUser user, String receiptUID, String newDate){
+        DatabaseReference userReceiptRoot = get_User_Receipt_UID(user, receiptUID);
+        if (userReceiptRoot != null) {
+            //Todo : Make sure you confirm before deleting
+            userReceiptRoot.child(RECEIPT_DATE).setValue(newDate);
+        }
+    }
+    /**
+     * Makes Modification for a Receipt Longitude
+     * @param user Current User
+     * @param receiptUID Current Receipt Unique ID
+     * @param newLongitude New Longitude
+     */
+    public void modified_User_Receipt_Longitude(@NonNull FirebaseUser user, String receiptUID, String newLongitude){
+        DatabaseReference userReceiptRoot = get_User_Receipt_UID(user, receiptUID);
+        if (userReceiptRoot != null) {
+            //Todo : Make sure you confirm before deleting
+            userReceiptRoot.child(RECEIPT_LON).setValue(newLongitude);
+        }
+    }
+    /**
+     * Makes Modification for a Receipt Latitude
+     * @param user Current User
+     * @param receiptUID Current Receipt Unique ID
+     * @param newLatitude New Latitude
+     */
+    public void modified_User_Receipt_Latitude(@NonNull FirebaseUser user, String receiptUID, String newLatitude){
+        DatabaseReference userReceiptRoot = get_User_Receipt_UID(user, receiptUID);
+        if (userReceiptRoot != null) {
+            //Todo : Make sure you confirm before deleting
+            userReceiptRoot.child(RECEIPT_LAT).setValue(newLatitude);
+        }
+    }
+    /**
+     * Makes Modification for a Receipt Total
+     * @param user Current User
+     * @param receiptUID Current Receipt Unique ID
+     * @param newTotal New Total
+     */
+    public void modified_User_Receipt_Total(@NonNull FirebaseUser user, String receiptUID, String newTotal){
+        DatabaseReference userReceiptRoot = get_User_Receipt_UID(user, receiptUID);
+        if (userReceiptRoot != null) {
+            //Todo : Make sure you confirm before deleting
+            userReceiptRoot.child(RECEIPT_TOTAL).setValue(newTotal);
+        }
+    }
+    /**
+     * Makes Modification for a Receipt Image Source
+     * @param user Current User
+     * @param receiptUID Current Receipt Unique ID
+     * @param newImgScr New Image Source
+     */
+    public void modified_User_Receipt_ImageSrc(@NonNull FirebaseUser user, String receiptUID, String newImgScr){
+        DatabaseReference userReceiptRoot = get_User_Receipt_UID(user, receiptUID);
+        if (userReceiptRoot != null) {
+            //Todo : Make sure you confirm before deleting
+            userReceiptRoot.child(RECEIPT_IMAG).setValue(newImgScr);
+        }
+    }
+    /**
+     * Makes Modification for a Receipt Name
+     * @param user Current User
+     * @param receiptUID Current Receipt Unique ID
+     * @param newReceiptName New Receipt Name
+     */
+    public void modified_User_Receipt_Name(@NonNull FirebaseUser user, String receiptUID, String newReceiptName){
+        DatabaseReference userReceiptRoot = get_User_Receipt_UID(user, receiptUID);
+        if (userReceiptRoot != null) {
+            //Todo : Make sure you confirm before deleting
+            userReceiptRoot.child(RECEIPT_IMAG).setValue(newReceiptName);
+        }
+    }
 
     //Action Methods User Authentication
     //Todo : Create Method : Delete User
@@ -169,13 +299,5 @@ public class FireBaseDataBaseUtils {
     //Todo : Create Method : Send Users Email Verification
     //Todo : Create Method : Set A Users new Email
     //Todo : Create Method : Get User Current Sign in
-
-    //Modify/Add Receipts (Specific Receipt)
-    //TOdo : Create Method : Modifies/Adds Receipt : Address
-    //TOdo : Create Method : Modifies/Adds Receipt : Date
-    //TOdo : Create Method : Modifies/Adds Receipt : Longitude
-    //TOdo : Create Method : Modifies/Adds Receipt : Latitude
-    //TOdo : Create Method : Modifies/Adds Receipt : Total
-    //TOdo : Create Method : Modifies/Adds Receipt : Image Scr
 
 }
