@@ -12,7 +12,7 @@ public class Receipt {
     private double total;
 
     // Receipt ID's will start from 0
-    private static int counter = 0;
+    public static int counter = 0;
     public final int receiptId;
 
     public Receipt(String longitude, String latitude, String address, String date, double total) {

@@ -25,6 +25,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
@@ -42,6 +45,8 @@ import alphag.com.receipts.R;
 import alphag.com.receipts.Users.UserHomeActivity;
 import alphag.com.receipts.Utils.ParseUtils;
 
+import static alphag.com.receipts.models.Receipt.counter;
+
 public class CameraDetect extends AppCompatActivity {
     //Log Cat
     private static final String TAG = "CameraDetect";
@@ -54,7 +59,12 @@ public class CameraDetect extends AppCompatActivity {
     private Bitmap imageBitmap;
     public String mCurrentPhotoPath;
     public boolean permissionGranted;
-    //Static Member Variables.
+
+    //FireBase Authentications
+    FirebaseAuth mAuth;
+    DatabaseReference mRootRef;
+
+    //Request Codes
     private static final int REQUEST_IMAGE_CAPTURE = 1 ;
     static final int REQUEST_TAKE_PHOTO = 1;
     public final static int REQUEST_CAMERA = 3;
@@ -68,23 +78,28 @@ public class CameraDetect extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_detect);
 
+        Log.d(TAG, "onCreate: RECEIPT STATIC MEM Counter : "  + counter);
+
         //Set member variables.
         mImageView_Camera = findViewById(R.id.camera_image);
         mButton_Snap = findViewById(R.id.camera_button_snapshot);
         mButton_Detect = findViewById(R.id.camera_button_detect);
         mTextview_Text = findViewById(R.id.camera_text);
         //---------------------
-        //Check Permissions
-        if(!permissionGranted){
-            if(checkPermissions()){
-                permissionGranted = true;
-            }
+        //Setting FireBase Utils
+        mAuth = FirebaseAuth.getInstance();
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        //---------------------
+        checkPermissions();
+        Log.d(TAG, "onCreate: permissions granted state ----------------: " + permissionGranted);
+        if (permissionGranted){
+            camera_button_snapshot();
+        }
+        else{
+            onStart();
         }
 
-        camera_button_snapshot();
-
     }
-
     /*
      * This methods will allow us to take a picture.
      * --------------------
@@ -119,8 +134,7 @@ public class CameraDetect extends AppCompatActivity {
     //This method will allows to retrieve the photo, to detect text recognition.
     private void setPic() {
         //Setting Pictures to new Bitmap Location
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
-        imageBitmap = bitmap;
+        imageBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
         Toast.makeText(this, "Converted to BitMap", Toast.LENGTH_SHORT).show();
         
     }
@@ -278,6 +292,7 @@ public class CameraDetect extends AppCompatActivity {
         //TODO Write Code to check permissions for Geo Location.
         // Permissions Check Int val will result 0 if all permissions was granted, other wise < 0 if 1 or many permissions were denied.
         //TODO Edit a better way to check all permissions at once without needed to add.
+        Log.d(TAG, "checkPermissions: PERMISSION CAMERA : " + permissionCheckCamera  + " PERMISSION WRITETable : "  + permissionCheckWritable  +  "PERMISSIONS CHECK READBALE :  "  + permissionCheckReadable);
         int permissionsCheck = permissionCheckCamera + permissionCheckReadable + permissionCheckWritable;
         //Allow the user to request permissions on the spot, if he wants.
         if (permissionsCheck != PackageManager.PERMISSION_GRANTED) {
@@ -288,6 +303,7 @@ public class CameraDetect extends AppCompatActivity {
                     REQUEST_CAMERA);
             return false;
         } else {
+            permissionGranted = true;
             return true;
         }
     }
@@ -302,6 +318,7 @@ public class CameraDetect extends AppCompatActivity {
 
     //Method that handles permission response.
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionsResult:  Camera Request "  + requestCode );
         //TODO Write code to check permissions result overall.
         if (requestCode == REQUEST_CAMERA) {
             //Receive permission result camera permission.
@@ -323,5 +340,19 @@ public class CameraDetect extends AppCompatActivity {
         }
     }
     //end onRequestPermissionsResult.
+    //Activity Events
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //If permissions were not granted we want to make sure it goes back one stack.
+        if(!permissionGranted) {
+            this.finish();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }

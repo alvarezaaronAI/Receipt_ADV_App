@@ -44,16 +44,17 @@ public class UserHomeActivity extends AppCompatActivity {
 
 
     //Firebase Database
-    DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-    DatabaseReference mUsersRef = mRootRef.child("users");
-    //FireBase Utils
-    FireBaseDataBaseUtils mFireBaseDBUtils;
+    DatabaseReference mRootRef;
+    DatabaseReference mUsersRef;
 
     ArrayList<Receipt> mfinalReceipts = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_userhome);
+
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        mUsersRef = mRootRef.child(FireBaseDataBaseUtils.getUsersKey());
 
         myToolBar = (Toolbar) findViewById(R.id.toolbar);
         mySpinner = (Spinner) findViewById(R.id.spinner);
@@ -69,31 +70,23 @@ public class UserHomeActivity extends AppCompatActivity {
         mySpinner.setAdapter(myAdapter);
 
 
-
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String userUId =  currentUser.getUid();
         DatabaseReference userRootRef = mUsersRef.child(userUId);
-        DatabaseReference userReceiptRootRef = userRootRef.child("receipts");
+        DatabaseReference userReceiptRootRef = userRootRef.child(FireBaseDataBaseUtils.getReceiptsKey());
 
 
         userReceiptRootRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                ArrayList<Receipt> receipts = JsonUtils.parseReceipts(dataSnapshot.getValue().toString());
-//                Log.d(TAG, "onDataChange: " + receipts.get(0));
-//                ArrayList<String> addresses = JsonUtils.getAddresses(receipts);
-//
-//                for(int i = 0 ; i < addresses.size(); i++){
-//                    mAddressTv.append(addresses.get(i) + "\n");
-//                }
                 mfinalReceipts = new ArrayList<>();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Receipt receiptTemp = new Receipt(
-                            " " + snapshot.child("longitude").getValue(),
-                            " " +snapshot.child("latitude").getValue(),
-                            " " +snapshot.child("address").getValue(),
-                            " " + snapshot.child("date").getValue(),
-                            Double.valueOf(snapshot.child("total").getValue().toString()));
+                            "" + snapshot.child(FireBaseDataBaseUtils.getReceiptLon()).getValue(),
+                            "" + snapshot.child(FireBaseDataBaseUtils.getReceiptLat()).getValue(),
+                            "" + snapshot.child(FireBaseDataBaseUtils.getReceiptAddress()).getValue(),
+                            "" + snapshot.child(FireBaseDataBaseUtils.getReceiptAddress()).getValue(),
+                            Double.valueOf(snapshot.child(FireBaseDataBaseUtils.getReceiptTotal()).getValue().toString()));
                     mfinalReceipts.add(receiptTemp);
                     Log.d(TAG, "onDataChange: " + receiptTemp.toString());
 

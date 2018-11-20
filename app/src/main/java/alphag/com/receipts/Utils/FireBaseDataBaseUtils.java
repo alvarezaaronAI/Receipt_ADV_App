@@ -300,4 +300,56 @@ public class FireBaseDataBaseUtils {
     //Todo : Create Method : Set A Users new Email
     //Todo : Create Method : Get User Current Sign in
 
+
+    public static String getFirstNameKey() {
+        return FIRST_NAME_KEY;
+    }
+
+    public static String getLastNameKey() {
+        return LAST_NAME_KEY;
+    }
+
+    public static String getPhoneKey() {
+        return PHONE_KEY;
+    }
+
+    public static String getEmailKey() {
+        return EMAIL_KEY;
+    }
+
+    public static String getReceiptName() {
+        return RECEIPT_NAME;
+    }
+
+    public static String getReceiptAddress() {
+        return RECEIPT_ADDRESS;
+    }
+
+    public static String getReceiptTotal() {
+        return RECEIPT_TOTAL;
+    }
+
+    public static String getReceiptDate() {
+        return RECEIPT_DATE;
+    }
+
+    public static String getReceiptLon() {
+        return RECEIPT_LON;
+    }
+
+    public static String getReceiptLat() {
+        return RECEIPT_LAT;
+    }
+
+    public static String getReceiptImag() {
+        return RECEIPT_IMAG;
+    }
+
+    public static String getUsersKey() {
+        return USERS_KEY;
+    }
+
+    public static String getReceiptsKey() {
+        return RECEIPTS_KEY;
+    }
 }
