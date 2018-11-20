@@ -2,8 +2,11 @@ package alphag.com.receipts.Utils;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -22,6 +25,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import java.io.IOException;
+import java.util.List;
 
 import alphag.com.receipts.R;
 
@@ -75,6 +81,26 @@ public class MapUtils extends AppCompatActivity implements OnMapReadyCallback {
                            Location currentLocation = (Location)task.getResult();
                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                    DEFAULT_ZOOM, "My Location");
+                           Geocoder gc = new Geocoder(MapUtils.this);
+
+                           try {
+                             List<Address> fin =  gc.getFromLocationName("5151 State University Dr, Los Angeles, CA 90032", 3);
+
+                                   Address fin1 = fin.get(0);
+                                   String cal = fin1.getLocality();
+
+                                   double lat = fin1.getLatitude();
+                                   double log = fin1.getLongitude();
+
+                                   LatLng latlng = new LatLng(lat,log);
+                                   MarkerOptions options = new MarkerOptions().position(latlng).title("School");
+                                   mMap.addMarker(options);
+
+
+                           } catch (IOException e) {
+                               e.printStackTrace();
+                           }
+
 
                        }
                        else{
