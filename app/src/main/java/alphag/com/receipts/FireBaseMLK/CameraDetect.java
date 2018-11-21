@@ -10,25 +10,30 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,10 +42,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import alphag.com.receipts.R;
-import alphag.com.receipts.Users.UserHomeActivity;
+import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
 import alphag.com.receipts.Utils.ParseUtils;
+import alphag.com.receipts.models.Receipt;
 
 public class CameraDetect extends AppCompatActivity {
     //Log Cat
@@ -54,7 +61,18 @@ public class CameraDetect extends AppCompatActivity {
     private Bitmap imageBitmap;
     public String mCurrentPhotoPath;
     public boolean permissionGranted;
-    //Static Member Variables.
+
+    //FireBase Authentications
+    private FirebaseAuth mAuth;
+    private FirebaseUser mCurrentUser;
+    private DatabaseReference mRootRef;
+    private FirebaseStorage mStorage;
+    private StorageReference mUsersStorage;
+
+    //Unique UUID For Receipt
+    private String mReceiptUID;
+
+    //Request Codes
     private static final int REQUEST_IMAGE_CAPTURE = 1 ;
     static final int REQUEST_TAKE_PHOTO = 1;
     public final static int REQUEST_CAMERA = 3;
@@ -74,17 +92,25 @@ public class CameraDetect extends AppCompatActivity {
         mButton_Detect = findViewById(R.id.camera_button_detect);
         mTextview_Text = findViewById(R.id.camera_text);
         //---------------------
-        //Check Permissions
-        if(!permissionGranted){
-            if(checkPermissions()){
-                permissionGranted = true;
-            }
+        //Setting FireBase Utils
+        mAuth = FirebaseAuth.getInstance();
+        mCurrentUser = mAuth.getCurrentUser();
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        mStorage = FirebaseStorage.getInstance();
+        //---------------------
+        //Making a unique val for the image receipt For firebase
+        mReceiptUID = UUID.randomUUID().toString();
+        //---------------------
+        checkPermissions();
+        Log.d(TAG, "onCreate: permissions granted state ----------------: " + permissionGranted);
+        if (permissionGranted){
+            camera_button_snapshot();
+        }
+        else{
+            onStart();
         }
 
-        camera_button_snapshot();
-
     }
-
     /*
      * This methods will allow us to take a picture.
      * --------------------
@@ -96,7 +122,7 @@ public class CameraDetect extends AppCompatActivity {
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
             File photoFile = null;
-            try {
+                try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 // Error occurred while creating the File
@@ -118,28 +144,12 @@ public class CameraDetect extends AppCompatActivity {
     }
     //This method will allows to retrieve the photo, to detect text recognition.
     private void setPic() {
-        // Get the dimensions of the View
-        int targetW = mImageView_Camera.getWidth();
-        int targetH = mImageView_Camera.getHeight();
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
-        imageBitmap = bitmap;
-        mImageView_Camera.setImageBitmap(bitmap);
+        //Setting Pictures to new Bitmap Location
+        imageBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+        Toast.makeText(this, "Converted to BitMap", Toast.LENGTH_SHORT).show();
+        //After it takes a picture, this should detect the text to upload.
+        camera_button_detect();
+        
     }
     //This method will allow us to save the current photo to our gallery, using the most recent path.
     private void galleryAddPic() {
@@ -159,8 +169,7 @@ public class CameraDetect extends AppCompatActivity {
             dispatchTakePictureIntent();
         }
         else{
-//            Intent intent = new Intent(this, UserHomeActivity.class);
-//            startActivity(intent);
+            checkPermissions();
         }
     }
     //This method would handle Button Detect.
@@ -244,16 +253,46 @@ public class CameraDetect extends AppCompatActivity {
 
         // From HashSet --> Return max price from List
         maxPrice = ParseUtils.getMaxPrice(pricesHashSet);
+        //-----------------Finished Reading------------------
 
-        // Update textView if maxPrice is not 0
-        // else the picture might not have read the text correctly
-        mTextview_Text.setTextSize(24);
-        if(maxPrice != 0){
-            mTextview_Text.append("$" + maxPrice);
-        }
-        else{
-            mTextview_Text.append(readErrorMessage);
-        }
+        //Uploading Image onto Storage FireBase
+        fireBase_Storage_Upload_Receipt_Image();
+        
+        //Making a Temporary Receipt
+        Receipt receiptToUpload = new Receipt(
+                mReceiptUID,
+                "Temp Receipt Name" ,
+                "12345",
+                "67890",
+                address,
+                date,
+                "https://firebasestorage.googleapis.com/v0/b/receipts-alphag.appspot.com/o/defaults%2Freceipts%2Fdefault_1.png?alt=media&token=daf6501a-5db1-4126-b202-f3bcbb800d79",
+                maxPrice);
+
+        //Uploading Receipt On DataBase FireBase
+        fireBase_Database_Upload_Receipt(receiptToUpload);
+    }
+
+    private void fireBase_Database_Upload_Receipt(Receipt receiptToUpload) {
+        //Get the Root Ref of Current User, Receipts
+        DatabaseReference usersRootRef = mRootRef.child(FireBaseDataBaseUtils.getUsersKey());
+        DatabaseReference currentUserRootRef = usersRootRef.child(mCurrentUser.getUid());
+        DatabaseReference currentUserReceiptsRootRef = currentUserRootRef.child(FireBaseDataBaseUtils.getReceiptsKey());
+        //Currently Under Users Receipts DataBase, Store them in the DataBase of Current User
+        currentUserReceiptsRootRef
+                .child(receiptToUpload.getReceiptUId())
+                .setValue(receiptToUpload)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.d(TAG, "onComplete: Success : Added new Receipt To Current User " + mCurrentUser.getUid().toString() );
+            }
+        });
+    }
+
+    private void fireBase_Storage_Upload_Receipt_Image() {
+        Log.d(TAG, "firebase_Storage_Upload_Receipt_Image: Supposed to upload to FireBase Storage");
+
     }
 
 
@@ -296,6 +335,7 @@ public class CameraDetect extends AppCompatActivity {
         //TODO Write Code to check permissions for Geo Location.
         // Permissions Check Int val will result 0 if all permissions was granted, other wise < 0 if 1 or many permissions were denied.
         //TODO Edit a better way to check all permissions at once without needed to add.
+        Log.d(TAG, "checkPermissions: PERMISSION CAMERA : " + permissionCheckCamera  + " PERMISSION WRITETable : "  + permissionCheckWritable  +  "PERMISSIONS CHECK READBALE :  "  + permissionCheckReadable);
         int permissionsCheck = permissionCheckCamera + permissionCheckReadable + permissionCheckWritable;
         //Allow the user to request permissions on the spot, if he wants.
         if (permissionsCheck != PackageManager.PERMISSION_GRANTED) {
@@ -306,6 +346,7 @@ public class CameraDetect extends AppCompatActivity {
                     REQUEST_CAMERA);
             return false;
         } else {
+            permissionGranted = true;
             return true;
         }
     }
@@ -320,6 +361,7 @@ public class CameraDetect extends AppCompatActivity {
 
     //Method that handles permission response.
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionsResult:  Camera Request "  + requestCode );
         //TODO Write code to check permissions result overall.
         if (requestCode == REQUEST_CAMERA) {
             //Receive permission result camera permission.
@@ -341,5 +383,19 @@ public class CameraDetect extends AppCompatActivity {
         }
     }
     //end onRequestPermissionsResult.
+    //Activity Events
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //If permissions were not granted we want to make sure it goes back one stack.
+        if(!permissionGranted) {
+            this.finish();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }
