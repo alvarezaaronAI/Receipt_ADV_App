@@ -45,8 +45,6 @@ import alphag.com.receipts.R;
 import alphag.com.receipts.Users.UserHomeActivity;
 import alphag.com.receipts.Utils.ParseUtils;
 
-import static alphag.com.receipts.models.Receipt.counter;
-
 public class CameraDetect extends AppCompatActivity {
     //Log Cat
     private static final String TAG = "CameraDetect";
@@ -77,8 +75,6 @@ public class CameraDetect extends AppCompatActivity {
         //On Create
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_detect);
-
-        Log.d(TAG, "onCreate: RECEIPT STATIC MEM Counter : "  + counter);
 
         //Set member variables.
         mImageView_Camera = findViewById(R.id.camera_image);
@@ -136,6 +132,8 @@ public class CameraDetect extends AppCompatActivity {
         //Setting Pictures to new Bitmap Location
         imageBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
         Toast.makeText(this, "Converted to BitMap", Toast.LENGTH_SHORT).show();
+        //After it takes a picture, this should detect the text to upload.
+        detect_text();
         
     }
     //This method will allow us to save the current photo to our gallery, using the most recent path.
