@@ -26,53 +26,51 @@ public class DateUtils {
         System.out.println("RESULT:\t" + checkRange(rDate, minDate, currentDay));
      */
 
-    public static ArrayList<Receipt> filter(ArrayList<Receipt> receipts, int days){
+    public static boolean filter(Receipt receipt, int days){
 
-        ArrayList<Receipt> filteredReceipts = null;
+        //ArrayList<Receipt> filteredReceipts = null;
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         Date date = new Date();
 
         if(days == 1){
             Date currentDay = parseDate(dateFormat.format(date));
             Date minDate = subtractDays(currentDay, days);
-            for(Receipt receipt : receipts){
-                Date dateFromReceipt = parseDate(receipt.getDate());
-                if (checkRange(dateFromReceipt, minDate, currentDay)){
-                    filteredReceipts.add(receipt);
-                }
+            Date dateFromReceipt = parseDate(receipt.getDate());
+            if (checkRange(dateFromReceipt, minDate, currentDay)){
+                return true;
             }
         }
-        else if(days == 7){
-            Date currentDay = parseDate(dateFormat.format(date));
-            Date minDate = subtractDays(currentDay, days);
-            for(Receipt receipt : receipts){
-                Date dateFromReceipt = parseDate(receipt.getDate());
-                if (checkRange(dateFromReceipt, minDate, currentDay)){
-                    filteredReceipts.add(receipt);
-                }
-            }
-        }
-        else if(days == 14){
-            Date currentDay = parseDate(dateFormat.format(date));
-            Date minDate = subtractDays(currentDay, days);
-            for(Receipt receipt : receipts){
-                Date dateFromReceipt = parseDate(receipt.getDate());
-                if (checkRange(dateFromReceipt, minDate, currentDay)){
-                    filteredReceipts.add(receipt);
-                }
-            }
-        }
-        else if(days == 30){
-            Date currentDay = parseDate(dateFormat.format(date));
-            Date minDate = subtractDays(currentDay, days);
-            for(Receipt receipt : receipts){
-                Date dateFromReceipt = parseDate(receipt.getDate());
-                if (checkRange(dateFromReceipt, minDate, currentDay)){
-                    filteredReceipts.add(receipt);
-                }
-            }
-        }
-        return filteredReceipts;
+//        else if(days == 7){
+//            Date currentDay = parseDate(dateFormat.format(date));
+//            Date minDate = subtractDays(currentDay, days);
+//            for(Receipt receipt : receipts){
+//                Date dateFromReceipt = parseDate(receipt.getDate());
+//                if (checkRange(dateFromReceipt, minDate, currentDay)){
+//                    filteredReceipts.add(receipt);
+//                }
+//            }
+//        }
+//        else if(days == 14){
+//            Date currentDay = parseDate(dateFormat.format(date));
+//            Date minDate = subtractDays(currentDay, days);
+//            for(Receipt receipt : receipts){
+//                Date dateFromReceipt = parseDate(receipt.getDate());
+//                if (checkRange(dateFromReceipt, minDate, currentDay)){
+//                    filteredReceipts.add(receipt);
+//                }
+//            }
+//        }
+//        else if(days == 30){
+//            Date currentDay = parseDate(dateFormat.format(date));
+//            Date minDate = subtractDays(currentDay, days);
+//            for(Receipt receipt : receipts){
+//                Date dateFromReceipt = parseDate(receipt.getDate());
+//                if (checkRange(dateFromReceipt, minDate, currentDay)){
+//                    filteredReceipts.add(receipt);
+//                }
+//            }
+//        }
+        return false;
     }
 
 
@@ -107,9 +105,9 @@ public class DateUtils {
 //        }
 //        return filteredReceipts;
 //    }
-    
-    
-    
+
+
+
     /*
         These methods help store data when creating Data Object.
         These methods also help convert String dates to Dates for calculations with dates.
@@ -145,3 +143,4 @@ public class DateUtils {
         return minDay.before(rdate) && !rdate.after(currentDate);
     }
 }
+
