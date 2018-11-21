@@ -10,28 +10,30 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,10 +42,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import alphag.com.receipts.R;
-import alphag.com.receipts.Users.UserHomeActivity;
+import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
 import alphag.com.receipts.Utils.ParseUtils;
+import alphag.com.receipts.models.Receipt;
 
 public class CameraDetect extends AppCompatActivity {
     //Log Cat
@@ -59,8 +63,14 @@ public class CameraDetect extends AppCompatActivity {
     public boolean permissionGranted;
 
     //FireBase Authentications
-    FirebaseAuth mAuth;
-    DatabaseReference mRootRef;
+    private FirebaseAuth mAuth;
+    private FirebaseUser mCurrentUser;
+    private DatabaseReference mRootRef;
+    private FirebaseStorage mStorage;
+    private StorageReference mUsersStorage;
+
+    //Unique UUID For Receipt
+    private String mReceiptUID;
 
     //Request Codes
     private static final int REQUEST_IMAGE_CAPTURE = 1 ;
@@ -84,7 +94,12 @@ public class CameraDetect extends AppCompatActivity {
         //---------------------
         //Setting FireBase Utils
         mAuth = FirebaseAuth.getInstance();
+        mCurrentUser = mAuth.getCurrentUser();
         mRootRef = FirebaseDatabase.getInstance().getReference();
+        mStorage = FirebaseStorage.getInstance();
+        //---------------------
+        //Making a unique val for the image receipt For firebase
+        mReceiptUID = UUID.randomUUID().toString();
         //---------------------
         checkPermissions();
         Log.d(TAG, "onCreate: permissions granted state ----------------: " + permissionGranted);
@@ -133,7 +148,7 @@ public class CameraDetect extends AppCompatActivity {
         imageBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
         Toast.makeText(this, "Converted to BitMap", Toast.LENGTH_SHORT).show();
         //After it takes a picture, this should detect the text to upload.
-        detect_text();
+        camera_button_detect();
         
     }
     //This method will allow us to save the current photo to our gallery, using the most recent path.
@@ -238,16 +253,46 @@ public class CameraDetect extends AppCompatActivity {
 
         // From HashSet --> Return max price from List
         maxPrice = ParseUtils.getMaxPrice(pricesHashSet);
+        //-----------------Finished Reading------------------
 
-        // Update textView if maxPrice is not 0
-        // else the picture might not have read the text correctly
-        mTextview_Text.setTextSize(24);
-        if(maxPrice != 0){
-            mTextview_Text.append("$" + maxPrice);
-        }
-        else{
-            mTextview_Text.append(readErrorMessage);
-        }
+        //Uploading Image onto Storage FireBase
+        fireBase_Storage_Upload_Receipt_Image();
+        
+        //Making a Temporary Receipt
+        Receipt receiptToUpload = new Receipt(
+                mReceiptUID,
+                "Temp Receipt Name" ,
+                "12345",
+                "67890",
+                address,
+                date,
+                "https://firebasestorage.googleapis.com/v0/b/receipts-alphag.appspot.com/o/defaults%2Freceipts%2Fdefault_1.png?alt=media&token=daf6501a-5db1-4126-b202-f3bcbb800d79",
+                maxPrice);
+
+        //Uploading Receipt On DataBase FireBase
+        fireBase_Database_Upload_Receipt(receiptToUpload);
+    }
+
+    private void fireBase_Database_Upload_Receipt(Receipt receiptToUpload) {
+        //Get the Root Ref of Current User, Receipts
+        DatabaseReference usersRootRef = mRootRef.child(FireBaseDataBaseUtils.getUsersKey());
+        DatabaseReference currentUserRootRef = usersRootRef.child(mCurrentUser.getUid());
+        DatabaseReference currentUserReceiptsRootRef = currentUserRootRef.child(FireBaseDataBaseUtils.getReceiptsKey());
+        //Currently Under Users Receipts DataBase, Store them in the DataBase of Current User
+        currentUserReceiptsRootRef
+                .child(receiptToUpload.getReceiptUId())
+                .setValue(receiptToUpload)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.d(TAG, "onComplete: Success : Added new Receipt To Current User " + mCurrentUser.getUid().toString() );
+            }
+        });
+    }
+
+    private void fireBase_Storage_Upload_Receipt_Image() {
+        Log.d(TAG, "firebase_Storage_Upload_Receipt_Image: Supposed to upload to FireBase Storage");
+
     }
 
 
