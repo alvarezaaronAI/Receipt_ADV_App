@@ -269,6 +269,15 @@ public class CameraDetect extends AppCompatActivity {
                 "https://firebasestorage.googleapis.com/v0/b/receipts-alphag.appspot.com/o/defaults%2Freceipts%2Fdefault_1.png?alt=media&token=daf6501a-5db1-4126-b202-f3bcbb800d79",
                 maxPrice);
 
+        Log.d(TAG, "process_text: \n Receipt + " + receiptToUpload.receiptUId +
+                " \n Receipt Name : " + receiptToUpload.getName() +
+                " \n Receipt longitude : " + receiptToUpload.getLongitude() +
+                " \n Receipt latitude : " + receiptToUpload.getLatitude() +
+                " \n Receipt address : " + receiptToUpload.getAddress() +
+                " \n Receipt date : " + receiptToUpload.getDate() +
+                " \n Receipt snapshotURI : " + receiptToUpload.getSnapshotUri() +
+                " \n Receipt price : " + receiptToUpload.getTotal()
+                );
         //Uploading Receipt On DataBase FireBase
         fireBase_Database_Upload_Receipt(receiptToUpload);
     }

@@ -37,4 +37,9 @@
     </string-array>
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="receipt_image">Receipt Image</string>
+    <string name="sample_title">Title</string>
+    <string name="sample_date">01/01/2018</string>
+    <string name="sample_total">$0.00</string>
+    <string name="sample_address">123 S Some Address Ave, Los Angeles California 90057</string>
 </resources>

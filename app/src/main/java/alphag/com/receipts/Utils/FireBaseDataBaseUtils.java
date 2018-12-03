@@ -30,6 +30,7 @@ public class FireBaseDataBaseUtils {
     final static String RECEIPT_DATE = "date";
     final static String RECEIPT_LON = "longitude";
     final static String RECEIPT_LAT = "longitude";
+    final static String RECEIPT_UID = "receiptUId";
     final static String RECEIPT_IMAG = "imagescr";
 
     //FireBase Static Key Vakyes for DataBase Root References
@@ -39,15 +40,17 @@ public class FireBaseDataBaseUtils {
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
     //FireBase Parent References
+
     /**
      * This method will allow you to get the root of a reference.
+     *
      * @param parentRoot The Parent root of the root key.
-     * @param rootKey The Key Value Json of that root.
+     * @param rootKey    The Key Value Json of that root.
      * @return The Root DatabaseReference given the key value.
      */
-    public DatabaseReference get_Root_Reference(DatabaseReference parentRoot , String rootKey){
-        if(parentRoot != null) {
-            Log.d(TAG, "get_Root_Reference: : Parent of Key is : " + parentRoot.getKey() );
+    public DatabaseReference get_Root_Reference(DatabaseReference parentRoot, String rootKey) {
+        if (parentRoot != null) {
+            Log.d(TAG, "get_Root_Reference: : Parent of Key is : " + parentRoot.getKey());
             return parentRoot.child(rootKey);
         }
         Log.d(TAG, "get_Root_Reference: Failed : parent root is null");
@@ -56,10 +59,11 @@ public class FireBaseDataBaseUtils {
 
     /**
      * Easy access To users key
+     *
      * @return Returns Users Database Reference
      */
-    public DatabaseReference get_Users_Root(){
-        if (mRootRef != null ) {
+    public DatabaseReference get_Users_Root() {
+        if (mRootRef != null) {
             DatabaseReference usersRoot = get_Root_Reference(mRootRef, USERS_KEY);
             Log.d(TAG, "get_Users_Root: Passed : Users ID Was Found" + "users");
             return usersRoot;
@@ -68,14 +72,16 @@ public class FireBaseDataBaseUtils {
         return null;
     }
     //FireBase User Root Reference
+
     /**
      * Returns a current user root Reference.
+     *
      * @param user
      * @return
      */
-    public DatabaseReference get_User_Root(@NonNull FirebaseUser user){
+    public DatabaseReference get_User_Root(@NonNull FirebaseUser user) {
         String userUID = user.getUid();
-        if (mRootRef != null ) {
+        if (mRootRef != null) {
             DatabaseReference userRoot = get_Root_Reference(get_Users_Root(), userUID);
             Log.d(TAG, "get_User_Root: Passed : To get User Root");
             return userRoot;
@@ -83,33 +89,38 @@ public class FireBaseDataBaseUtils {
         Log.d(TAG, "get_User_Root: Failed : To get User Root - FireBase Root is Null");
         return null;
     }
+
     /**
      * Returns the Root Reference Current User Receipts
+     *
      * @param user The current user.
      * @return The Root Reference of the current user.
      */
-    public DatabaseReference get_User_Receipts_Root(@NonNull FirebaseUser user){
+    public DatabaseReference get_User_Receipts_Root(@NonNull FirebaseUser user) {
         DatabaseReference userReceiptRoot = get_User_Root(user).child(RECEIPTS_KEY);
         Log.d(TAG, "get_User_Receipts_Root: Passed : To get User Receipt Root");
         return userReceiptRoot;
     }
+
     /**
-     * @param user Current User
+     * @param user       Current User
      * @param receiptUID The UID of one receipt
      * @return DataBase Root Reference of Current Receipt UID
      */
-    public DatabaseReference get_User_Receipt_UID(@NonNull FirebaseUser user, String receiptUID){
-        return get_Root_Reference(get_User_Receipts_Root(user),receiptUID);
+    public DatabaseReference get_User_Receipt_UID(@NonNull FirebaseUser user, String receiptUID) {
+        return get_Root_Reference(get_User_Receipts_Root(user), receiptUID);
     }
 
 
     //Action Methods To Modify DataBase
+
     /**
      * This method would automatically add new a user onto the Firebase Database.
-     * @param user This is the Firebase User Unique ID created from Firebase Authentication.
+     *
+     * @param user    This is the Firebase User Unique ID created from Firebase Authentication.
      * @param userObj This is the User Object, with all its info.
      */
-    public void add_New_User_DataBase (@NonNull FirebaseUser user, @NonNull User userObj){
+    public void add_New_User_DataBase(@NonNull FirebaseUser user, @NonNull User userObj) {
         String userUiTemp = user.getUid();
         DatabaseReference usersRootTemp = get_Users_Root();
         if (usersRootTemp != null) {
@@ -127,11 +138,13 @@ public class FireBaseDataBaseUtils {
                     });
         }
     }
+
     /**
      * This method would delete a user from the FireBase Database, but NOT! from authentication.
+     *
      * @param user This is the user which in we want to delete from the FireBase Database/
      */
-    public void delete_User_DataBase(@NonNull FirebaseUser user){
+    public void delete_User_DataBase(@NonNull FirebaseUser user) {
         String userUiTemp = user.getUid();
         DatabaseReference usersRootTemp = get_Users_Root();
         if (usersRootTemp != null) {
@@ -142,14 +155,16 @@ public class FireBaseDataBaseUtils {
 
     }
 
-    
+
     //Users Modifications
+
     /**
      * Method that will modify users first name their database
-     * @param user Current User
+     *
+     * @param user         Current User
      * @param newFirstName New First Name of Current User
      */
-    public void modified_User_First_Name(@NonNull FirebaseUser user, String newFirstName){
+    public void modified_User_First_Name(@NonNull FirebaseUser user, String newFirstName) {
         String userUiTemp = user.getUid();
         DatabaseReference usersRootTemp = get_Users_Root();
         if (usersRootTemp != null) {
@@ -158,9 +173,11 @@ public class FireBaseDataBaseUtils {
         }
 
     }
+
     /**
      * Method that will modify users last name on their database
-     * @param user Current User
+     *
+     * @param user        Current User
      * @param newLastName New Last Name of Current User
      */
     public void modified_User_Last_Name(@NonNull FirebaseUser user, String newLastName) {
@@ -171,9 +188,11 @@ public class FireBaseDataBaseUtils {
             usersRootTemp.child(userUiTemp).child(LAST_NAME_KEY).setValue(newLastName);
         }
     }
+
     /**
      * Method that will modify users phone number on their database
-     * @param user Current User
+     *
+     * @param user           Current User
      * @param newPhoneNumber New Phone Number of Current User
      */
     public void modified_User_Phone(@NonNull FirebaseUser user, String newPhoneNumber) {
@@ -184,9 +203,11 @@ public class FireBaseDataBaseUtils {
             usersRootTemp.child(userUiTemp).child(PHONE_KEY).setValue(newPhoneNumber);
         }
     }
+
     /**
      * Method that will modify users email on their database
-     * @param user Current User
+     *
+     * @param user     Current User
      * @param newEmail New Email of Current User
      */
     public void modified_User_Email(@NonNull FirebaseUser user, String newEmail) {
@@ -199,91 +220,105 @@ public class FireBaseDataBaseUtils {
     }
 
     //Modify/Add Receipts (Specific Receipt)
+
     /**
      * Makes Modification for a Receipt Address
-     * @param user Current User
-     * @param receiptUID Current Receipt Unique ID
+     *
+     * @param user              Current User
+     * @param receiptUID        Current Receipt Unique ID
      * @param newReceiptAddress New Address
      */
-    public void modified_User_Receipt_Address(@NonNull FirebaseUser user, String receiptUID, String newReceiptAddress){
+    public void modified_User_Receipt_Address(@NonNull FirebaseUser user, String receiptUID, String newReceiptAddress) {
         DatabaseReference userReceiptRoot = get_User_Receipt_UID(user, receiptUID);
         if (userReceiptRoot != null) {
             //Todo : Make sure you confirm before deleting
             userReceiptRoot.child(RECEIPT_ADDRESS).setValue(newReceiptAddress);
         }
     }
+
     /**
      * Makes Modification for a Receipt Date
-     * @param user Current User
+     *
+     * @param user       Current User
      * @param receiptUID Current Receipt Unique ID
-     * @param newDate New Date
+     * @param newDate    New Date
      */
-    public void modified_User_Receipt_Date(@NonNull FirebaseUser user, String receiptUID, String newDate){
+    public void modified_User_Receipt_Date(@NonNull FirebaseUser user, String receiptUID, String newDate) {
         DatabaseReference userReceiptRoot = get_User_Receipt_UID(user, receiptUID);
         if (userReceiptRoot != null) {
             //Todo : Make sure you confirm before deleting
             userReceiptRoot.child(RECEIPT_DATE).setValue(newDate);
         }
     }
+
     /**
      * Makes Modification for a Receipt Longitude
-     * @param user Current User
-     * @param receiptUID Current Receipt Unique ID
+     *
+     * @param user         Current User
+     * @param receiptUID   Current Receipt Unique ID
      * @param newLongitude New Longitude
      */
-    public void modified_User_Receipt_Longitude(@NonNull FirebaseUser user, String receiptUID, String newLongitude){
+    public void modified_User_Receipt_Longitude(@NonNull FirebaseUser user, String receiptUID, String newLongitude) {
         DatabaseReference userReceiptRoot = get_User_Receipt_UID(user, receiptUID);
         if (userReceiptRoot != null) {
             //Todo : Make sure you confirm before deleting
             userReceiptRoot.child(RECEIPT_LON).setValue(newLongitude);
         }
     }
+
     /**
      * Makes Modification for a Receipt Latitude
-     * @param user Current User
-     * @param receiptUID Current Receipt Unique ID
+     *
+     * @param user        Current User
+     * @param receiptUID  Current Receipt Unique ID
      * @param newLatitude New Latitude
      */
-    public void modified_User_Receipt_Latitude(@NonNull FirebaseUser user, String receiptUID, String newLatitude){
+    public void modified_User_Receipt_Latitude(@NonNull FirebaseUser user, String receiptUID, String newLatitude) {
         DatabaseReference userReceiptRoot = get_User_Receipt_UID(user, receiptUID);
         if (userReceiptRoot != null) {
             //Todo : Make sure you confirm before deleting
             userReceiptRoot.child(RECEIPT_LAT).setValue(newLatitude);
         }
     }
+
     /**
      * Makes Modification for a Receipt Total
-     * @param user Current User
+     *
+     * @param user       Current User
      * @param receiptUID Current Receipt Unique ID
-     * @param newTotal New Total
+     * @param newTotal   New Total
      */
-    public void modified_User_Receipt_Total(@NonNull FirebaseUser user, String receiptUID, String newTotal){
+    public void modified_User_Receipt_Total(@NonNull FirebaseUser user, String receiptUID, String newTotal) {
         DatabaseReference userReceiptRoot = get_User_Receipt_UID(user, receiptUID);
         if (userReceiptRoot != null) {
             //Todo : Make sure you confirm before deleting
             userReceiptRoot.child(RECEIPT_TOTAL).setValue(newTotal);
         }
     }
+
     /**
      * Makes Modification for a Receipt Image Source
-     * @param user Current User
+     *
+     * @param user       Current User
      * @param receiptUID Current Receipt Unique ID
-     * @param newImgScr New Image Source
+     * @param newImgScr  New Image Source
      */
-    public void modified_User_Receipt_ImageSrc(@NonNull FirebaseUser user, String receiptUID, String newImgScr){
+    public void modified_User_Receipt_ImageSrc(@NonNull FirebaseUser user, String receiptUID, String newImgScr) {
         DatabaseReference userReceiptRoot = get_User_Receipt_UID(user, receiptUID);
         if (userReceiptRoot != null) {
             //Todo : Make sure you confirm before deleting
             userReceiptRoot.child(RECEIPT_IMAG).setValue(newImgScr);
         }
     }
+
     /**
      * Makes Modification for a Receipt Name
-     * @param user Current User
-     * @param receiptUID Current Receipt Unique ID
+     *
+     * @param user           Current User
+     * @param receiptUID     Current Receipt Unique ID
      * @param newReceiptName New Receipt Name
      */
-    public void modified_User_Receipt_Name(@NonNull FirebaseUser user, String receiptUID, String newReceiptName){
+    public void modified_User_Receipt_Name(@NonNull FirebaseUser user, String receiptUID, String newReceiptName) {
         DatabaseReference userReceiptRoot = get_User_Receipt_UID(user, receiptUID);
         if (userReceiptRoot != null) {
             //Todo : Make sure you confirm before deleting
@@ -351,5 +386,9 @@ public class FireBaseDataBaseUtils {
 
     public static String getReceiptsKey() {
         return RECEIPTS_KEY;
+    }
+
+    public static String getReceiptUid() {
+        return RECEIPT_UID;
     }
 }

@@ -1,7 +1,9 @@
 package alphag.com.receipts.Users;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +17,13 @@ import alphag.com.receipts.R;
 import alphag.com.receipts.models.Receipt;
 
 public class ReceiptAdapter extends RecyclerView.Adapter<ReceiptAdapter.ReceiptViewHolder> {
-
+    private static final String TAG = "ReceiptAdapter";
     private List<Receipt> mReceiptsList;
-    private Context mContext;
+    
+    public static String RECEIPT_UID = "receiptUId";
     public ReceiptAdapter(List<Receipt> receiptsList) {
         this.mReceiptsList = receiptsList;
+
     }
 
     @Override
@@ -42,6 +46,7 @@ public class ReceiptAdapter extends RecyclerView.Adapter<ReceiptAdapter.ReceiptV
         receiptViewHolder.textLocation.setText(receipt.getAddress());
         receiptViewHolder.textDate.setText(receipt.getDate());
         receiptViewHolder.textPrice.setText("$" + formattedPrice);
+        receiptViewHolder.bindOnClickListener(i);
 
     }
 
@@ -65,7 +70,20 @@ public class ReceiptAdapter extends RecyclerView.Adapter<ReceiptAdapter.ReceiptV
             textDate = itemView.findViewById(R.id.tv_receipt_date);
             textPrice = itemView.findViewById(R.id.tv_receipt_price);
 
+        }
 
+        public void bindOnClickListener(final int pos) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(TAG, "onClick: Creating Intent");
+                    Intent receiptDetailedIntent = new Intent(v.getContext(), ReceiptDetailedActivity.class);
+                    Log.d(TAG, "onClick: Finished Creating Intent");
+                    receiptDetailedIntent.putExtra(RECEIPT_UID, mReceiptsList.get(pos).getReceiptUId());
+                    Log.d(TAG, "onClick: Finished Putting Extra" + mReceiptsList.get(pos).getReceiptUId());
+                    v.getContext().startActivity(receiptDetailedIntent);
+                }
+            });
         }
     }
 }
