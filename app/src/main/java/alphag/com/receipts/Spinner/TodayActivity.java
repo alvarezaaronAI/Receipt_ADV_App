@@ -4,12 +4,14 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import alphag.com.receipts.R;
 import alphag.com.receipts.Users.ReceiptAdapter;
+import alphag.com.receipts.Users.UserHomeActivity;
 import alphag.com.receipts.models.Receipt;
 
 public class TodayActivity extends AppCompatActivity {
@@ -17,8 +19,10 @@ public class TodayActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ReceiptAdapter adapter;
 
+
     List<Receipt> receiptsList;
 
+    Toast mToast;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -31,13 +31,15 @@ import alphag.com.receipts.R;
 import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
 import alphag.com.receipts.models.Receipt;
 
-public class UserHomeActivity extends AppCompatActivity {
+public class UserHomeActivity extends AppCompatActivity{
     private static final String TAG = "UserHomeActivity";
 
     Toolbar myToolBar;
     Spinner mySpinner;
     ImageButton myImageProfile;
     FloatingActionButton mFloatingActionBt;
+
+    Toast mToast;
 
     RecyclerView mReceiptsRV;
     ReceiptAdapter mReceiptsAdapter;
@@ -81,15 +83,18 @@ public class UserHomeActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mfinalReceipts = new ArrayList<>();
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    Receipt receiptTemp = new Receipt(
-                            "" + snapshot.child(FireBaseDataBaseUtils.getReceiptLon()).getValue(),
-                            "" + snapshot.child(FireBaseDataBaseUtils.getReceiptLat()).getValue(),
-                            "" + snapshot.child(FireBaseDataBaseUtils.getReceiptAddress()).getValue(),
-                            "" + snapshot.child(FireBaseDataBaseUtils.getReceiptAddress()).getValue(),
-                            Double.valueOf(snapshot.child(FireBaseDataBaseUtils.getReceiptTotal()).getValue().toString()));
+                   Receipt receiptTemp = new Receipt(
+                           "" + snapshot.child(FireBaseDataBaseUtils.getReceiptUid()).getValue(),
+                           "" + snapshot.child(FireBaseDataBaseUtils.getReceiptName()).getValue(),
+                           "" + snapshot.child(FireBaseDataBaseUtils.getReceiptLon()).getValue(),
+                           "" + snapshot.child(FireBaseDataBaseUtils.getReceiptLat()).getValue(),
+                           "" + snapshot.child(FireBaseDataBaseUtils.getReceiptAddress()).getValue(),
+                           "" + snapshot.child(FireBaseDataBaseUtils.getReceiptDate()).getValue(),
+                           "" + snapshot.child(FireBaseDataBaseUtils.getReceiptImag()).getValue(),
+                           Double.valueOf(snapshot.child(FireBaseDataBaseUtils.getReceiptTotal()).getValue().toString()));
                     mfinalReceipts.add(receiptTemp);
-                    Log.d(TAG, "onDataChange: " + receiptTemp.toString());
 
+                    Log.d(TAG, "onDataChange: " + receiptTemp.toString());
                     LinearLayoutManager layoutManager = new LinearLayoutManager(UserHomeActivity.this);
                     mReceiptsRV.setLayoutManager(layoutManager);
                     mReceiptsRV.setHasFixedSize(true);
@@ -98,9 +103,6 @@ public class UserHomeActivity extends AppCompatActivity {
                     mReceiptsAdapter = new ReceiptAdapter(mfinalReceipts);
                     mReceiptsRV.setAdapter(mReceiptsAdapter);
                 }
-//                User user = dataSnapshot.getValue(User.class);
-//                Log.d(TAG, "onDataChange: -----" + user.getEmail());
-
                 Toast.makeText(UserHomeActivity.this, "User Data was Appended", Toast.LENGTH_SHORT).show();
             }
 
@@ -109,7 +111,6 @@ public class UserHomeActivity extends AppCompatActivity {
 
             }
         });
-
         mFloatingActionBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -117,6 +118,13 @@ public class UserHomeActivity extends AppCompatActivity {
                 startActivity(cameraIntent);
             }
         });
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
 
     }
@@ -135,4 +143,6 @@ public class UserHomeActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
     }
+
+
 }

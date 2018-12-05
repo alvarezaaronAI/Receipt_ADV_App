@@ -46,7 +46,7 @@
         <activity android:name=".Users.UserHomeActivity" />
         <activity android:name=".Authetications.Auth_Sign_Up" />
         <activity android:name=".Spinner.TodayActivity" />
-
+        <activity android:name=".Users.ReceiptDetailedActivity"></activity>
     </application>
 
 </manifest>

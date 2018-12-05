@@ -15,8 +15,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,16 +55,15 @@ import alphag.com.receipts.models.Receipt;
 
 public class CameraDetect extends AppCompatActivity {
     //Log Cat
-    private static final String TAG = "CameraDetect";
+    private static final String TAG = "CameraDetectActivity";
     //Member Variables.
-    private ImageView mImageView_Camera;
-    private Button mButton_Snap;
-    private Button mButton_Detect;
-    private TextView mTextview_Text;
-    //More Member Variables ( Function Available)
-    private Bitmap imageBitmap;
-    public String mCurrentPhotoPath;
-    public boolean permissionGranted;
+    private ImageButton mIamgeButton;
+    private EditText mEditName;
+    private EditText mEditDate;
+    private EditText mEditTotal;
+    private EditText mEditAddress;
+    private ProgressBar mProgress;
+    private Button mConfirmButton;
 
     //FireBase Authentications
     private FirebaseAuth mAuth;
@@ -72,8 +75,12 @@ public class CameraDetect extends AppCompatActivity {
     //Unique UUID For Receipt
     private String mReceiptUID;
 
+    //More Member Variables ( Function Available)
+    private Bitmap imageBitmap;
+    public String mCurrentPhotoPath;
+    public boolean permissionGranted;
     //Request Codes
-    private static final int REQUEST_IMAGE_CAPTURE = 1 ;
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_TAKE_PHOTO = 1;
     public final static int REQUEST_CAMERA = 3;
 
@@ -87,10 +94,13 @@ public class CameraDetect extends AppCompatActivity {
         setContentView(R.layout.activity_camera_detect);
 
         //Set member variables.
-        mImageView_Camera = findViewById(R.id.camera_image);
-        mButton_Snap = findViewById(R.id.camera_button_snapshot);
-        mButton_Detect = findViewById(R.id.camera_button_detect);
-        mTextview_Text = findViewById(R.id.camera_text);
+        mIamgeButton = (ImageButton) findViewById(R.id.ib_receipt_confirmation_image);
+        mEditName = (EditText) findViewById(R.id.et_receipt_confirmation_name);
+        mEditDate = (EditText) findViewById(R.id.et_receipt_confirmation_date);
+        mEditTotal = (EditText) findViewById(R.id.et_receipt_confirmation_total);
+        mEditAddress = (EditText) findViewById(R.id.et_receipt_confirmation_address);
+        mConfirmButton = (Button) findViewById(R.id.bt_receipt_confirmation_button);
+        mProgress = (ProgressBar) findViewById(R.id.pb_receipt_confirmation_progressbar);
         //---------------------
         //Setting FireBase Utils
         mAuth = FirebaseAuth.getInstance();
@@ -103,14 +113,14 @@ public class CameraDetect extends AppCompatActivity {
         //---------------------
         checkPermissions();
         Log.d(TAG, "onCreate: permissions granted state ----------------: " + permissionGranted);
-        if (permissionGranted){
+        if (permissionGranted) {
             camera_button_snapshot();
-        }
-        else{
+        } else {
             onStart();
         }
 
     }
+
     /*
      * This methods will allow us to take a picture.
      * --------------------
@@ -122,7 +132,7 @@ public class CameraDetect extends AppCompatActivity {
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             // Create the File where the photo should go
             File photoFile = null;
-                try {
+            try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 // Error occurred while creating the File
@@ -138,19 +148,34 @@ public class CameraDetect extends AppCompatActivity {
             }
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         setPic();
     }
+
     //This method will allows to retrieve the photo, to detect text recognition.
     private void setPic() {
         //Setting Pictures to new Bitmap Location
         imageBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+        Log.d(TAG, "setPic: Picture Current Photo Path : " + mCurrentPhotoPath);
         Toast.makeText(this, "Converted to BitMap", Toast.LENGTH_SHORT).show();
         //After it takes a picture, this should detect the text to upload.
+        if (imageBitmap != null) {
+            mIamgeButton.setImageBitmap(imageBitmap);
+            mProgress.setVisibility(View.VISIBLE);
+            mIamgeButton.setEnabled(false);
+            mEditName.setEnabled(false);
+            mEditAddress.setEnabled(false);
+            mEditDate.setEnabled(false);
+            mEditTotal.setEnabled(false);
+            mConfirmButton.setEnabled(false);
+        } else {
+        }
         camera_button_detect();
-        
+
     }
+
     //This method will allow us to save the current photo to our gallery, using the most recent path.
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -159,38 +184,34 @@ public class CameraDetect extends AppCompatActivity {
         mediaScanIntent.setData(contentUri);
         this.sendBroadcast(mediaScanIntent);
     }
-    /*
-     * Handles Buttons actions
-     */
+
     //This method would handle Button Snapshot.
     public void camera_button_snapshot() {
-        Log.i(TAG, "Permissions State : " +permissionGranted + "Method");
-        if(permissionGranted) {
+        Log.i(TAG, "Permissions State : " + permissionGranted + "Method");
+        if (permissionGranted) {
             dispatchTakePictureIntent();
-        }
-        else{
+        } else {
             checkPermissions();
         }
     }
+
     //This method would handle Button Detect.
     public void camera_button_detect() {
-            detect_text();
+        detect_text();
     }
-    /*
-     * Handles image recognition
-     */
+
     private void detect_text() {
         FirebaseVisionImage image = FirebaseVisionImage.fromBitmap(imageBitmap);
         /**
-        FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
-                .getOnDeviceTextRecognizer();
+         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
+         .getOnDeviceTextRecognizer();
          **/
         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
                 .getCloudTextRecognizer();
         detector.processImage(image).addOnSuccessListener(new OnSuccessListener<FirebaseVisionText>() {
             @Override
             public void onSuccess(FirebaseVisionText firebaseVisionText) {
-                    process_text(firebaseVisionText);
+                process_text(firebaseVisionText);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -200,13 +221,9 @@ public class CameraDetect extends AppCompatActivity {
         });
     }
 
-    /*
-     * Handles image processing to external uses
-     */
     private void process_text(FirebaseVisionText firebaseVisionText) {
         // Reset elements
         pricesHashSet.clear();
-        mTextview_Text.setText("");
         double maxPrice = -1;
         double cleanedNumber;
         String readErrorMessage = "Please Take Photo Again";
@@ -232,9 +249,6 @@ public class CameraDetect extends AppCompatActivity {
             if(date == null){
                 date = ParseUtils.getDateFromReceipt(block.getText());
             }
-            Log.d("DATE", "process_text: " + date);
-            Log.d("ADDRESS", "process_text: " + address);
-
             // Read each line in current block
             for (int i = 0; i < lines.size(); i++) {
                 FirebaseVisionText.Line line = lines.get(i);
@@ -257,20 +271,27 @@ public class CameraDetect extends AppCompatActivity {
 
         //Uploading Image onto Storage FireBase
         fireBase_Storage_Upload_Receipt_Image();
-        
-        //Making a Temporary Receipt
-        Receipt receiptToUpload = new Receipt(
-                mReceiptUID,
-                "Temp Receipt Name" ,
-                "12345",
-                "67890",
-                address,
-                date,
-                "https://firebasestorage.googleapis.com/v0/b/receipts-alphag.appspot.com/o/defaults%2Freceipts%2Fdefault_1.png?alt=media&token=daf6501a-5db1-4126-b202-f3bcbb800d79",
-                maxPrice);
 
-        //Uploading Receipt On DataBase FireBase
-        fireBase_Database_Upload_Receipt(receiptToUpload);
+        // Set Texts
+        Log.d(TAG, "process_text: Getting Values from Firebase Authentication: \n"
+                + date + "\n"
+                + maxPrice + "\n"
+                + address + "\n");
+        //Make Sure Users cant edit while trying to figure out the values
+
+        mEditName.setText("Receipt Name");
+        mEditDate.setText(date);
+        mEditTotal.setText("" + maxPrice);
+        mEditAddress.setText(address);
+
+        mProgress.setVisibility(View.GONE);
+        mIamgeButton.setEnabled(true);
+        mEditName.setEnabled(true);
+        mEditAddress.setEnabled(true);
+        mEditDate.setEnabled(true);
+        mEditTotal.setEnabled(true);
+        mConfirmButton.setEnabled(true);
+
     }
 
     private void fireBase_Database_Upload_Receipt(Receipt receiptToUpload) {
@@ -283,15 +304,16 @@ public class CameraDetect extends AppCompatActivity {
                 .child(receiptToUpload.getReceiptUId())
                 .setValue(receiptToUpload)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Log.d(TAG, "onComplete: Success : Added new Receipt To Current User " + mCurrentUser.getUid().toString() );
-            }
-        });
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Log.d(TAG, "onComplete: Success : Added new Receipt To Current User " + mCurrentUser.getUid().toString());
+                    }
+                });
     }
 
     private void fireBase_Storage_Upload_Receipt_Image() {
         Log.d(TAG, "firebase_Storage_Upload_Receipt_Image: Supposed to upload to FireBase Storage");
+        Toast.makeText(this, "Uploading to Storage Database", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -299,9 +321,7 @@ public class CameraDetect extends AppCompatActivity {
     private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
-    /*
-     * Handles High Quality Picture
-     */
+
     //Method that creates a path.
     private File createImageFile() throws IOException {
         // Create an temp image File to store.
@@ -318,9 +338,7 @@ public class CameraDetect extends AppCompatActivity {
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
-    /*
-     * Handles Permissions Methods
-     */
+
     //Checks and grants permission to use camera, if and only if is not yet accepted.
     public boolean checkPermissions() {
         //Checking for Write External Storage Permission.
@@ -335,7 +353,7 @@ public class CameraDetect extends AppCompatActivity {
         //TODO Write Code to check permissions for Geo Location.
         // Permissions Check Int val will result 0 if all permissions was granted, other wise < 0 if 1 or many permissions were denied.
         //TODO Edit a better way to check all permissions at once without needed to add.
-        Log.d(TAG, "checkPermissions: PERMISSION CAMERA : " + permissionCheckCamera  + " PERMISSION WRITETable : "  + permissionCheckWritable  +  "PERMISSIONS CHECK READBALE :  "  + permissionCheckReadable);
+        Log.d(TAG, "checkPermissions: PERMISSION CAMERA : " + permissionCheckCamera + " PERMISSION WRITETable : " + permissionCheckWritable + "PERMISSIONS CHECK READBALE :  " + permissionCheckReadable);
         int permissionsCheck = permissionCheckCamera + permissionCheckReadable + permissionCheckWritable;
         //Allow the user to request permissions on the spot, if he wants.
         if (permissionsCheck != PackageManager.PERMISSION_GRANTED) {
@@ -350,18 +368,17 @@ public class CameraDetect extends AppCompatActivity {
             return true;
         }
     }
-    //end checkPermissions.
 
     //Method that checks if External Device is Writable.
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED.equals(state);
     }
-    //end isExternalStorageWritable.
+
 
     //Method that handles permission response.
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.d(TAG, "onRequestPermissionsResult:  Camera Request "  + requestCode );
+        Log.d(TAG, "onRequestPermissionsResult:  Camera Request " + requestCode);
         //TODO Write code to check permissions result overall.
         if (requestCode == REQUEST_CAMERA) {
             //Receive permission result camera permission.
@@ -382,14 +399,13 @@ public class CameraDetect extends AppCompatActivity {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-    //end onRequestPermissionsResult.
     //Activity Events
 
     @Override
     protected void onStart() {
         super.onStart();
         //If permissions were not granted we want to make sure it goes back one stack.
-        if(!permissionGranted) {
+        if (!permissionGranted) {
             this.finish();
         }
     }
@@ -397,5 +413,55 @@ public class CameraDetect extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    public void receipt_confirmation_handle(View view) {
+        //Getting Users Values
+
+        //if edits are not null then proceed to upload receipt online.
+        //else toast to check some value.
+        if (checkEditNulls()) {
+            //Making a Temporary Receipt
+            Receipt receiptToUpload = new Receipt(
+                    mReceiptUID,
+                    mEditName.getText().toString(),
+                    "12345",
+                    "67890",
+                    mEditAddress.getText().toString(),
+                    mEditDate.getText().toString(),
+                    "https://firebasestorage.googleapis.com/v0/b/receipts-alphag.appspot.com/o/defaults%2Freceipts%2Fdefault_1.png?alt=media&token=daf6501a-5db1-4126-b202-f3bcbb800d79",
+                    Double.parseDouble(mEditTotal.getText().toString()));
+
+            Log.d(TAG, "process_text: \n Receipt : " + receiptToUpload.receiptUId +
+                    " \n Receipt Name : " + receiptToUpload.getName() +
+                    " \n Receipt longitude : " + receiptToUpload.getLongitude() +
+                    " \n Receipt latitude : " + receiptToUpload.getLatitude() +
+                    " \n Receipt address : " + receiptToUpload.getAddress() +
+                    " \n Receipt date : " + receiptToUpload.getDate() +
+                    " \n Receipt snapshotURI : " + receiptToUpload.getSnapshotUri() +
+                    " \n Receipt price : " + receiptToUpload.getTotal()
+            );
+            //Uploading Receipt On DataBase FireBase
+            fireBase_Database_Upload_Receipt(receiptToUpload);
+            finish();
+        }
+    }
+
+    private boolean checkEditNulls() {
+        if (
+                (mEditName.getText().toString() != null)
+                        || (mEditDate.getText().toString() != null)
+                        || (mEditTotal.getText().toString() != null)
+                        || (mEditAddress.getText().toString() != null)
+                ) {
+            return true;
+
+        }
+        return false;
+
+    }
+
+    public void receipt_confirmation_image_handle(View view) {
+        Toast.makeText(this, "The Image was clicked.", Toast.LENGTH_SHORT).show();
     }
 }
