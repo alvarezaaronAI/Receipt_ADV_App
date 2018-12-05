@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
 
 import alphag.com.receipts.R;
 import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
@@ -29,6 +30,7 @@ public class ReceiptDetailedActivity extends AppCompatActivity {
     TextView mReceiptTotal;
     TextView mReceiptDate;
     TextView mReceiptAddress;
+    String mReceiptUID;
     //Firebase Database
     private DatabaseReference mRootRef;
     private DatabaseReference mUsersRef;
@@ -38,7 +40,8 @@ public class ReceiptDetailedActivity extends AppCompatActivity {
     //Athentication
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
-
+    //Storage
+    FirebaseStorage storage = FirebaseStorage.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +52,6 @@ public class ReceiptDetailedActivity extends AppCompatActivity {
         mReceiptTotal = (TextView) findViewById(R.id.tv_receipt_detail_price);
         mReceiptDate = (TextView) findViewById(R.id.tv_receipt_detail_date);
         mReceiptAddress = (TextView) findViewById(R.id.tv_receipt_detail_address);
-        mReceiptTitle.setText("Hellow");
         //Authentication
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
@@ -61,9 +63,12 @@ public class ReceiptDetailedActivity extends AppCompatActivity {
 
         Intent previousIntent = getIntent();
         if (previousIntent.hasExtra(ReceiptAdapter.RECEIPT_UID)) {
-            String receiptUID = previousIntent.getStringExtra(ReceiptAdapter.RECEIPT_UID);
-            mCurrentReceiptRef = mReceiptsRef.child(receiptUID);
-            Log.d(TAG, "onCreate: " + mReceiptsRef.child(receiptUID));
+            mReceiptUID = previousIntent.getStringExtra(ReceiptAdapter.RECEIPT_UID);
+            mCurrentReceiptRef = mReceiptsRef.child(mReceiptUID);
+            Log.d(TAG, "onCreate: " + mReceiptsRef.child(mReceiptUID));
+            //Receipt Image
+
+            //Receipt Content
             mCurrentReceiptRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -87,9 +92,6 @@ public class ReceiptDetailedActivity extends AppCompatActivity {
         }
     }
 
-    private void setValues() {
-
-    }
 
 
     public void receipt_confirmation_handler(View view) {

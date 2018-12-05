@@ -149,24 +149,24 @@ public class Auth_Sign_Up extends AppCompatActivity {
                         new FireBaseDataBaseUtils().add_New_User_DataBase(user,userTemp);
 
                         //Setting Up Users Storage Plus Attach a Default Picture.
-//                        String createUsersPath = "users/" + user.getUid() + "/receipts/" + receiptUID +".png";
-//                        StorageReference usersReceiptsRef = mStorage.getReference(createUsersPath);
-//
-//                        StorageMetadata metadata = new StorageMetadata
-//                                .Builder()
-//                                .setCustomMetadata("Text","Default Receipt Picture")
-//                                .build();
-//
-//                        UploadTask uploadUsersStorage = usersReceiptsRef.putBytes(mReceiptByteData,metadata);
-//
-//                        uploadUsersStorage.addOnSuccessListener(Auth_Sign_Up.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                            @Override
-//                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                                mProgressBar.setVisibility(View.GONE);
-//                                mCreateAccountBt.setEnabled(true);
-//                                Log.d(TAG, "onSuccess: Created A new account");
-//                            }
-//                        });
+                        String createUsersPath = "users/" + user.getUid() + "/receipts/" + receiptUID +".png";
+                        StorageReference usersReceiptsRef = mStorage.getReference(createUsersPath);
+
+                        StorageMetadata metadata = new StorageMetadata
+                                .Builder()
+                                .setCustomMetadata("Text","Default Receipt Picture")
+                                .build();
+
+                        UploadTask uploadUsersStorage = usersReceiptsRef.putBytes(mReceiptByteData,metadata);
+
+                        uploadUsersStorage.addOnSuccessListener(Auth_Sign_Up.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                mProgressBar.setVisibility(View.GONE);
+                                mCreateAccountBt.setEnabled(true);
+                                Log.d(TAG, "onSuccess: Created A new account");
+                            }
+                        });
 
                         Intent intent = new Intent(Auth_Sign_Up.this, Auth_Sign_In.class);
                         //Start the Intent.

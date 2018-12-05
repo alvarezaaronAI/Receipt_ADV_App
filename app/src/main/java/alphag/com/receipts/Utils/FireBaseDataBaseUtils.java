@@ -32,7 +32,7 @@ public class FireBaseDataBaseUtils {
     final static String RECEIPT_LAT = "longitude";
     final static String RECEIPT_UID = "receiptUId";
     final static String RECEIPT_IMAG = "imagescr";
-
+    final static String STORAGE_USERS = "users";
     //FireBase Static Key Vakyes for DataBase Root References
     final static String USERS_KEY = "users";
     final static String RECEIPTS_KEY = "receipts";
@@ -390,5 +390,9 @@ public class FireBaseDataBaseUtils {
 
     public static String getReceiptUid() {
         return RECEIPT_UID;
+    }
+
+    public static String getStorageUsers() {
+        return STORAGE_USERS;
     }
 }
