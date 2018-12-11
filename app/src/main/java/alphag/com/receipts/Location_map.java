@@ -12,12 +12,16 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import java.util.ArrayList;
+import java.util.Map;
+
 import alphag.com.receipts.Utils.MapUtils;
 
 public class Location_map extends AppCompatActivity {
     private static final String TAG = "Location_map";
 
     private static final int ERROR_DIALOG_REQUEST = 9001;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +35,13 @@ public class Location_map extends AppCompatActivity {
 
     private void init(){
         Button btnMap = (Button) findViewById(R.id.btnMap);
+
         btnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Location_map.this, MapUtils.class);
                 startActivity(intent);
+
             }
         });
     }

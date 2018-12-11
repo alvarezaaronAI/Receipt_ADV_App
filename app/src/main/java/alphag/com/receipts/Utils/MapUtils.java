@@ -23,10 +23,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import alphag.com.receipts.R;
@@ -66,10 +69,10 @@ public class MapUtils extends AppCompatActivity implements OnMapReadyCallback {
         setContentView(R.layout.maputils);
         getLocationPermission();
     }
+
     private void getDeviceLocation(){
         Log.d(TAG, "InitMap: initializing map" );
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
        try {
            if(mLocationPermissionsGranted){
                Task location = mFusedLocationProviderClient.getLastLocation();
@@ -81,26 +84,6 @@ public class MapUtils extends AppCompatActivity implements OnMapReadyCallback {
                            Location currentLocation = (Location)task.getResult();
                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                    DEFAULT_ZOOM, "My Location");
-                           Geocoder gc = new Geocoder(MapUtils.this);
-
-                           try {
-                             List<Address> fin =  gc.getFromLocationName("5151 State University Dr, Los Angeles, CA 90032", 3);
-
-                                   Address fin1 = fin.get(0);
-                                   String cal = fin1.getLocality();
-
-                                   double lat = fin1.getLatitude();
-                                   double log = fin1.getLongitude();
-
-                                   LatLng latlng = new LatLng(lat,log);
-                                   MarkerOptions options = new MarkerOptions().position(latlng).title("School");
-                                   mMap.addMarker(options);
-
-
-                           } catch (IOException e) {
-                               e.printStackTrace();
-                           }
-
 
                        }
                        else{
@@ -115,6 +98,26 @@ public class MapUtils extends AppCompatActivity implements OnMapReadyCallback {
            Log.e(TAG, "GetDeviceLocation: SecurityException " + e.getMessage());
        }
     }
+
+    public void setMarkers(String location){
+        Geocoder gc = new Geocoder(MapUtils.this);
+        try {
+            List<Address> fin =  gc.getFromLocationName(location, 3);
+
+            Address fin1 = fin.get(0);
+            String cal = fin1.getLocality();
+
+            double lat = fin1.getLatitude();
+            double log = fin1.getLongitude();
+
+            LatLng latlng = new LatLng(lat,log);
+            MarkerOptions options = new MarkerOptions().position(latlng).title("Spot");
+            mMap.addMarker(options);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void moveCamera(LatLng latlng, float zoom, String title){
         Log.d(TAG, "MoveCamera: Moving the camera to: lat:" + latlng.latitude + ", lng:" + latlng.longitude);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng,zoom) );
@@ -122,6 +125,7 @@ public class MapUtils extends AppCompatActivity implements OnMapReadyCallback {
         MarkerOptions options = new MarkerOptions().position(latlng).title(title);
 
         mMap.addMarker(options);
+        setMarkers("7122 Arbutus Ave Huntington park 90255");
     }
 
     public void initMap(){
