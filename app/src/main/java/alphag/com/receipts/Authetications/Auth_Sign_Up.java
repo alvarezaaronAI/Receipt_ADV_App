@@ -1,6 +1,11 @@
 package alphag.com.receipts.Authetications;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +29,7 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -48,7 +54,7 @@ public class Auth_Sign_Up extends AppCompatActivity {
     //FireBase Authentication
     private FirebaseAuth mAuth;
     private FirebaseStorage mStorage;
-    private StorageReference mDefaultReciept;
+    private StorageReference mStorageRef;
     private byte[] mReceiptByteData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +72,8 @@ public class Auth_Sign_Up extends AppCompatActivity {
         //Firebase Authentication Instance
         mAuth = FirebaseAuth.getInstance();
         mStorage = FirebaseStorage.getInstance();
-        mDefaultReciept = mStorage.getReference().child("https://firebasestorage.googleapis.com/v0/b/receipts-alphag.appspot.com/o/defaults%2Freceipts%2Fdefault_1.png?alt=media&token=daf6501a-5db1-4126-b202-f3bcbb800d79");
-        Log.d(TAG, "onCreate: mDefaultStorage : " + mDefaultReciept);
+        mStorageRef = mStorage.getReference();
+        //mDefaultReciept = mStorage.getReference().child("https://firebasestorage.googleapis.com/v0/b/receipts-alphag.appspot.com/o/defaults%2Freceipts%2Fdefault_1.png?alt=media&token=daf6501a-5db1-4126-b202-f3bcbb800d79");
 
     }
     @Override
@@ -89,11 +95,11 @@ public class Auth_Sign_Up extends AppCompatActivity {
         //Todo : Authenticate First, Last , Email , PassWord, and Password Match Cases
         mCreateAccountBt.setEnabled(false);
         mProgressBar.setVisibility(View.VISIBLE);
-        validate(firstNameTemp, lastNameTemp, emailTemp, passWordTemp, passWordMatchTemp);
 
         //Downloading Default Receipt File
 
 //        final long ONE_MEGABYTE = 1024 * 1024;
+//        Log.d(TAG, "create_New_Account_Handler: Path : " + mDefaultReciept.getPath());
 //        Log.d(TAG, "onCreate: START HERE -------------------");
 //        mDefaultReciept.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
 //            @Override
@@ -111,6 +117,7 @@ public class Auth_Sign_Up extends AppCompatActivity {
 //        });
 //        Log.d(TAG, "onCreate: END HERE -------------------");
 
+        validate(firstNameTemp, lastNameTemp, emailTemp, passWordTemp, passWordMatchTemp);
     }
 
     public void validate(String firstNameTemp, String lastNameTemp, String emailTemp,
@@ -134,7 +141,7 @@ public class Auth_Sign_Up extends AppCompatActivity {
                                 "67890",
                                 "123 Default Address Ave, Los Angeles CA 90022",
                                 "12/24/1996",
-                                "https://firebasestorage.googleapis.com/v0/b/receipts-alphag.appspot.com/o/defaults%2Freceipts%2Fdefault_1.png?alt=media&token=daf6501a-5db1-4126-b202-f3bcbb800d79",
+                                "gs://receipts-alphag.appspot.com/defaults/receipts/default_1.png",
                                 0.00);
 
                         ArrayList<Receipt> defaultReceiptsUser = new ArrayList<>();
@@ -148,25 +155,54 @@ public class Auth_Sign_Up extends AppCompatActivity {
                         //Setting Up User DataBase
                         new FireBaseDataBaseUtils().add_New_User_DataBase(user,userTemp);
 
-                        //Setting Up Users Storage Plus Attach a Default Picture.
-                        String createUsersPath = "users/" + user.getUid() + "/receipts/" + receiptUID +".png";
-                        StorageReference usersReceiptsRef = mStorage.getReference(createUsersPath);
+                        //Setting Up Storage before anything
+                        StorageReference mUsers = mStorageRef.child("" + FireBaseDataBaseUtils.getStorageUsers());
+                        StorageReference mUser = mUsers.child("" + user.getUid());
+                        StorageReference mUserReceipts = mUser.child("" + FireBaseDataBaseUtils.getStrorageUsersReceipts());
 
-                        StorageMetadata metadata = new StorageMetadata
-                                .Builder()
-                                .setCustomMetadata("Text","Default Receipt Picture")
-                                .build();
+                        Resources res = getResources();
+                        Drawable drawable = res.getDrawable(R.drawable.ic_texture_black_24dp);
 
-                        UploadTask uploadUsersStorage = usersReceiptsRef.putBytes(mReceiptByteData,metadata);
+                        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        byte[] data = baos.toByteArray();
 
-                        uploadUsersStorage.addOnSuccessListener(Auth_Sign_Up.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        UploadTask uploadTask = mUserReceipts.putBytes(data);
+                        uploadTask.addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                Log.d(TAG, "onFailure: Path Generated Failed");
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                mProgressBar.setVisibility(View.GONE);
-                                mCreateAccountBt.setEnabled(true);
-                                Log.d(TAG, "onSuccess: Created A new account");
+                                Log.d(TAG, "onSuccess: Path Generated Success");
                             }
                         });
+
+
+//                        //Setting Up Users Storage Plus Attach a Default Picture.
+//                        String createUsersPath = "users/" + user.getUid() + "/receipts/" + receiptUID +".png";
+//      b                   StorageReference usersReceiptsRef = mStorage.getReference(createUsersPath);
+//
+//                        StorageMetadata metadata = new StorageMetadata
+//                                .Builder()
+//                                .setCustomMetadata("Text","Default Receipt Picture")
+//                                .build();
+//
+//                        UploadTask uploadUsersStorage = usersReceiptsRef.putBytes(mReceiptByteData,metadata);
+//
+//                        Log.d(TAG, "onComplete:  upload storage: " + (uploadUsersStorage == null));
+//
+//                        uploadUsersStorage.addOnSuccessListener(Auth_Sign_Up.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                            @Override
+//                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                                mProgressBar.setVisibility(View.GONE);
+//                                mCreateAccountBt.setEnabled(true);
+//                                Log.d(TAG, "onSuccess: Created A new account");
+//                            }
+//                        });
 
                         Intent intent = new Intent(Auth_Sign_Up.this, Auth_Sign_In.class);
                         //Start the Intent.
