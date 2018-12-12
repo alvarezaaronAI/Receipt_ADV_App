@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -38,7 +39,9 @@ import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextRecognizer;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -69,8 +72,9 @@ public class CameraDetect extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
     private DatabaseReference mRootRef;
+    //FireBase Storage
     private FirebaseStorage mStorage;
-    private StorageReference mUsersStorage;
+    private StorageReference mStorageRef;
 
     //Unique UUID For Receipt
     private String mReceiptUID;
@@ -107,6 +111,7 @@ public class CameraDetect extends AppCompatActivity {
         mCurrentUser = mAuth.getCurrentUser();
         mRootRef = FirebaseDatabase.getInstance().getReference();
         mStorage = FirebaseStorage.getInstance();
+        mStorageRef = mStorage.getReference();
         //---------------------
         //Making a unique val for the image receipt For firebase
         mReceiptUID = UUID.randomUUID().toString();
@@ -170,6 +175,7 @@ public class CameraDetect extends AppCompatActivity {
             mEditDate.setEnabled(false);
             mEditTotal.setEnabled(false);
             mConfirmButton.setEnabled(false);
+            //fireBase_Storage_Upload_Receipt_Image();
         } else {
         }
         camera_button_detect();
@@ -269,9 +275,6 @@ public class CameraDetect extends AppCompatActivity {
         maxPrice = ParseUtils.getMaxPrice(pricesHashSet);
         //-----------------Finished Reading------------------
 
-        //Uploading Image onto Storage FireBase
-        fireBase_Storage_Upload_Receipt_Image();
-
         // Set Texts
         Log.d(TAG, "process_text: Getting Values from Firebase Authentication: \n"
                 + date + "\n"
@@ -312,9 +315,32 @@ public class CameraDetect extends AppCompatActivity {
     }
 
     private void fireBase_Storage_Upload_Receipt_Image() {
-        Log.d(TAG, "firebase_Storage_Upload_Receipt_Image: Supposed to upload to FireBase Storage");
-        Toast.makeText(this, "Uploading to Storage Database", Toast.LENGTH_SHORT).show();
 
+        //Setting Up Storage before anything
+        StorageReference mUsers = mStorageRef.child("" + FireBaseDataBaseUtils.getStorageUsers());
+        StorageReference mUser = mUsers.child("" + mCurrentUser.getUid());
+        StorageReference mUserReceipts = mUser.child("" + FireBaseDataBaseUtils.getStrorageUsersReceipts());
+        StorageReference mUserReceipt = mUserReceipts.child("" + mReceiptUID);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        final UploadTask uploadTask = mUserReceipt.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                Log.d(TAG, "onFailure: Path a Failed");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Log.d(TAG, "onSuccess: Path Generated Success");
+                Log.d(TAG, "onSuccess: Upload Byte : " +  taskSnapshot.getBytesTransferred());
+                Log.d(TAG, "onSuccess: Upload Session: " + taskSnapshot.getUploadSessionUri());
+            }
+        });
+        Log.d(TAG, "fireBase_Storage_Upload_Receipt_Image: Upload Task Snapshot : " + uploadTask.getSnapshot().getUploadSessionUri());
     }
 
 
@@ -416,8 +442,8 @@ public class CameraDetect extends AppCompatActivity {
     }
 
     public void receipt_confirmation_handle(View view) {
-        //Getting Users Values
-
+        //Uploading Image onto Storage FireBase
+        fireBase_Storage_Upload_Receipt_Image();
         //if edits are not null then proceed to upload receipt online.
         //else toast to check some value.
         if (checkEditNulls()) {
@@ -429,7 +455,7 @@ public class CameraDetect extends AppCompatActivity {
                     "67890",
                     mEditAddress.getText().toString(),
                     mEditDate.getText().toString(),
-                    "https://firebasestorage.googleapis.com/v0/b/receipts-alphag.appspot.com/o/defaults%2Freceipts%2Fdefault_1.png?alt=media&token=daf6501a-5db1-4126-b202-f3bcbb800d79",
+                    generateReceiptStoragePath(),
                     Double.parseDouble(mEditTotal.getText().toString()));
 
             Log.d(TAG, "process_text: \n Receipt : " + receiptToUpload.receiptUId +
@@ -445,6 +471,11 @@ public class CameraDetect extends AppCompatActivity {
             fireBase_Database_Upload_Receipt(receiptToUpload);
             finish();
         }
+    }
+
+    private String generateReceiptStoragePath(){
+        String defaultPath = "gs://receipts-alphag.appspot.com/users/"+ mCurrentUser.getUid() + "/receipts/"+ mReceiptUID;
+        return defaultPath;
     }
 
     private boolean checkEditNulls() {

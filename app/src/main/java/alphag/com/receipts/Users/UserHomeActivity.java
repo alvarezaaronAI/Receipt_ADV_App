@@ -23,6 +23,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -63,7 +65,6 @@ public class UserHomeActivity extends AppCompatActivity{
         myImageProfile = (ImageButton) findViewById(R.id.profileButton);
         mReceiptsRV = (RecyclerView) findViewById(R.id.rv_users_home_receipts);
         mFloatingActionBt = (FloatingActionButton) findViewById(R.id.fab_new_receipt);
-
 
 
         ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(UserHomeActivity.this,

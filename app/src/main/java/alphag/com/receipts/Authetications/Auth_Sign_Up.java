@@ -1,6 +1,11 @@
 package alphag.com.receipts.Authetications;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +29,7 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -47,9 +53,9 @@ public class Auth_Sign_Up extends AppCompatActivity {
     Button mCreateAccountBt;
     //FireBase Authentication
     private FirebaseAuth mAuth;
-    private FirebaseStorage mStorage;
-    private StorageReference mDefaultReciept;
+
     private byte[] mReceiptByteData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,19 +71,20 @@ public class Auth_Sign_Up extends AppCompatActivity {
         mCreateAccountBt = (Button) findViewById(R.id.bt_auth_sign_up_create_account);
         //Firebase Authentication Instance
         mAuth = FirebaseAuth.getInstance();
-        mStorage = FirebaseStorage.getInstance();
-        mDefaultReciept = mStorage.getReference().child("https://firebasestorage.googleapis.com/v0/b/receipts-alphag.appspot.com/o/defaults%2Freceipts%2Fdefault_1.png?alt=media&token=daf6501a-5db1-4126-b202-f3bcbb800d79");
-        Log.d(TAG, "onCreate: mDefaultStorage : " + mDefaultReciept);
+
+        //mDefaultReciept = mStorage.getReference().child("https://firebasestorage.googleapis.com/v0/b/receipts-alphag.appspot.com/o/defaults%2Freceipts%2Fdefault_1.png?alt=media&token=daf6501a-5db1-4126-b202-f3bcbb800d79");
 
     }
+
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        if (mAuth != null){
+        if (mAuth != null) {
             //Handle User Already Sign in
         }
     }
+
     //This should make a new account and put in the database
     public void create_New_Account_Handler(View view) {
         // changed email from final to not final String
@@ -89,11 +96,11 @@ public class Auth_Sign_Up extends AppCompatActivity {
         //Todo : Authenticate First, Last , Email , PassWord, and Password Match Cases
         mCreateAccountBt.setEnabled(false);
         mProgressBar.setVisibility(View.VISIBLE);
-        validate(firstNameTemp, lastNameTemp, emailTemp, passWordTemp, passWordMatchTemp);
 
         //Downloading Default Receipt File
 
 //        final long ONE_MEGABYTE = 1024 * 1024;
+//        Log.d(TAG, "create_New_Account_Handler: Path : " + mDefaultReciept.getPath());
 //        Log.d(TAG, "onCreate: START HERE -------------------");
 //        mDefaultReciept.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
 //            @Override
@@ -111,62 +118,44 @@ public class Auth_Sign_Up extends AppCompatActivity {
 //        });
 //        Log.d(TAG, "onCreate: END HERE -------------------");
 
+        validate(firstNameTemp, lastNameTemp, emailTemp, passWordTemp, passWordMatchTemp);
     }
 
     public void validate(String firstNameTemp, String lastNameTemp, String emailTemp,
-                         String passWordTemp, String passWordMatchTemp){
-        try{
+                         String passWordTemp, String passWordMatchTemp) {
+        try {
             final String validFirstName = validateName(firstNameTemp);
             final String validLastName = validateName(lastNameTemp);
             final String validEmail = validateEmail(emailTemp);
             final String validPassword = validatePassword(passWordTemp, passWordMatchTemp);
 
             //Setting UP Users Account.
-            mAuth.createUserWithEmailAndPassword(validEmail,validPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            mAuth.createUserWithEmailAndPassword(validEmail, validPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         String receiptUID = UUID.randomUUID().toString();
                         Receipt defaultReceipt = new Receipt(
                                 receiptUID,
-                                "Pollo Loco" ,
+                                "Pollo Loco",
                                 "12345",
                                 "67890",
                                 "123 Default Address Ave, Los Angeles CA 90022",
                                 "12/24/1996",
-                                "https://firebasestorage.googleapis.com/v0/b/receipts-alphag.appspot.com/o/defaults%2Freceipts%2Fdefault_1.png?alt=media&token=daf6501a-5db1-4126-b202-f3bcbb800d79",
+                                "gs://receipts-alphag.appspot.com/defaults/receipts/default_1.png",
                                 0.00);
 
                         ArrayList<Receipt> defaultReceiptsUser = new ArrayList<>();
                         defaultReceiptsUser.add(defaultReceipt);
                         //Creating User data
-                        User userTemp = new User(validFirstName,validLastName,validEmail,defaultReceiptsUser);
+                        User userTemp = new User(validFirstName, validLastName, validEmail, defaultReceiptsUser);
                         //Getting current User
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
 
                         //Setting Up User DataBase
-                        new FireBaseDataBaseUtils().add_New_User_DataBase(user,userTemp);
+                        new FireBaseDataBaseUtils().add_New_User_DataBase(user, userTemp);
 
-                        //Setting Up Users Storage Plus Attach a Default Picture.
-                        String createUsersPath = "users/" + user.getUid() + "/receipts/" + receiptUID +".png";
-                        StorageReference usersReceiptsRef = mStorage.getReference(createUsersPath);
-
-                        StorageMetadata metadata = new StorageMetadata
-                                .Builder()
-                                .setCustomMetadata("Text","Default Receipt Picture")
-                                .build();
-
-                        UploadTask uploadUsersStorage = usersReceiptsRef.putBytes(mReceiptByteData,metadata);
-
-                        uploadUsersStorage.addOnSuccessListener(Auth_Sign_Up.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                mProgressBar.setVisibility(View.GONE);
-                                mCreateAccountBt.setEnabled(true);
-                                Log.d(TAG, "onSuccess: Created A new account");
-                            }
-                        });
 
                         Intent intent = new Intent(Auth_Sign_Up.this, Auth_Sign_In.class);
                         //Start the Intent.
@@ -174,14 +163,13 @@ public class Auth_Sign_Up extends AppCompatActivity {
                         //Sign in User if its Successful
 
                         Log.d(TAG, "onComplete: Success : To Create a new user.");
-                    }
-                    else{
+                    } else {
                         Log.d(TAG, "onComplete: Failed : To create a new user.");
                         Toast.makeText(Auth_Sign_Up.this, "Failed to Create Special Token", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-        } catch (Exception e){
+        } catch (Exception e) {
             emailTemp = null;
             passWordTemp = null;
             mCreateAccountBt.setEnabled(true);
@@ -190,15 +178,15 @@ public class Auth_Sign_Up extends AppCompatActivity {
         }
     }
 
-    public String validateName(String name){
-        if(name != null || name != ""){
-            for(int i = 0 ; i < name.length() ; i++){
-                if(Character.isLetter(i)){
+    public String validateName(String name) {
+        if (name != null || name != "") {
+            for (int i = 0; i < name.length(); i++) {
+                if (Character.isLetter(i)) {
                     name = name.substring(0, 1).toUpperCase() +
                             name.substring(1, name.length());
                     Toast.makeText(this, "NAME: " + name, Toast.LENGTH_SHORT).show();
 
-                }else{
+                } else {
                     return name;
                 }
             }
@@ -206,8 +194,8 @@ public class Auth_Sign_Up extends AppCompatActivity {
         return null;
     }
 
-    public String validateEmail(String email){
-        if (email != null && email.contains("@") && email.contains(".")){
+    public String validateEmail(String email) {
+        if (email != null && email.contains("@") && email.contains(".")) {
             return email;
         }
         Toast.makeText(this, "Invalid Email", Toast.LENGTH_SHORT).show();
@@ -216,8 +204,9 @@ public class Auth_Sign_Up extends AppCompatActivity {
 
 
     public final int MIN_PASS_LENGTH = 6;
-    public String validatePassword(String password, String reenteredPassword){
-        if(password.length() >= MIN_PASS_LENGTH && password.equals(reenteredPassword)){
+
+    public String validatePassword(String password, String reenteredPassword) {
+        if (password.length() >= MIN_PASS_LENGTH && password.equals(reenteredPassword)) {
             return password;
         }
         Log.d(TAG, "validatePassword: CHECK PASSWORD");
