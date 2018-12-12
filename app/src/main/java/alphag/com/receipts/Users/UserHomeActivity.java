@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -37,7 +38,7 @@ import alphag.com.receipts.R;
 import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
 import alphag.com.receipts.models.Receipt;
 
-public class UserHomeActivity extends AppCompatActivity{
+public class UserHomeActivity extends AppCompatActivity {
     private static final String TAG = "UserHomeActivity";
 
     Toolbar myToolBar;
@@ -58,6 +59,7 @@ public class UserHomeActivity extends AppCompatActivity{
     DatabaseReference mUsersRef;
 
     ArrayList<Receipt> mfinalReceipts = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +82,7 @@ public class UserHomeActivity extends AppCompatActivity{
 
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        String userUId =  currentUser.getUid();
+        String userUId = currentUser.getUid();
         DatabaseReference userRootRef = mUsersRef.child(userUId);
         DatabaseReference userReceiptRootRef = userRootRef.child(FireBaseDataBaseUtils.getReceiptsKey());
 
@@ -89,16 +91,16 @@ public class UserHomeActivity extends AppCompatActivity{
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mfinalReceipts = new ArrayList<>();
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                   Receipt receiptTemp = new Receipt(
-                           "" + snapshot.child(FireBaseDataBaseUtils.getReceiptUid()).getValue(),
-                           "" + snapshot.child(FireBaseDataBaseUtils.getReceiptName()).getValue(),
-                           "" + snapshot.child(FireBaseDataBaseUtils.getReceiptLon()).getValue(),
-                           "" + snapshot.child(FireBaseDataBaseUtils.getReceiptLat()).getValue(),
-                           "" + snapshot.child(FireBaseDataBaseUtils.getReceiptAddress()).getValue(),
-                           "" + snapshot.child(FireBaseDataBaseUtils.getReceiptDate()).getValue(),
-                           "" + snapshot.child(FireBaseDataBaseUtils.getReceiptImag()).getValue(),
-                           Double.valueOf(snapshot.child(FireBaseDataBaseUtils.getReceiptTotal()).getValue().toString()));
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Receipt receiptTemp = new Receipt(
+                            "" + snapshot.child(FireBaseDataBaseUtils.getReceiptUid()).getValue(),
+                            "" + snapshot.child(FireBaseDataBaseUtils.getReceiptName()).getValue(),
+                            "" + snapshot.child(FireBaseDataBaseUtils.getReceiptLon()).getValue(),
+                            "" + snapshot.child(FireBaseDataBaseUtils.getReceiptLat()).getValue(),
+                            "" + snapshot.child(FireBaseDataBaseUtils.getReceiptAddress()).getValue(),
+                            "" + snapshot.child(FireBaseDataBaseUtils.getReceiptDate()).getValue(),
+                            "" + snapshot.child(FireBaseDataBaseUtils.getReceiptImag()).getValue(),
+                            Double.valueOf(snapshot.child(FireBaseDataBaseUtils.getReceiptTotal()).getValue().toString()));
                     mfinalReceipts.add(receiptTemp);
 
                     Log.d(TAG, "onDataChange: " + receiptTemp.toString());
@@ -121,74 +123,22 @@ public class UserHomeActivity extends AppCompatActivity{
         mFloatingActionBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent cameraIntent = new Intent(UserHomeActivity.this,CameraDetect.class);
+                Intent cameraIntent = new Intent(UserHomeActivity.this, CameraDetect.class);
                 startActivity(cameraIntent);
             }
 
         });
 
-            myMapButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(UserHomeActivity.this, "here mofo", Toast.LENGTH_SHORT).show();
-                    if(permissionGranted) {
-                        Intent mapsIntent = new Intent(UserHomeActivity.this, ReceiptsMapsActivity.class);
-                        startActivity(mapsIntent);
-                    }
-                    else{
-                       checkPermissions();
-                    }
-                }
-            });
-
-    }
-
-    public boolean checkPermissions() {
-        //Checking for Write External Storage Permission.
-        //Checking for all permissions manifest State.
-        int permissionCheckAccessFineLocation = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-        int permissionCheckAccessCoarseLocation = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
-        //TODO Write Code to check permissions for Geo Location.
-        // Permissions Check Int val will result 0 if all permissions was granted, other wise < 0 if 1 or many permissions were denied.
-        //TODO Edit a better way to check all permissions at once without needed to add.
-        Log.d(TAG, "checkPermissions: PERMISSION Map : " + permissionCheckAccessFineLocation + " PERMISSION Access fine location: " + permissionCheckAccessCoarseLocation );
-        int permissionsCheck = permissionCheckAccessFineLocation + permissionCheckAccessCoarseLocation;
-        //Allow the user to request permissions on the spot, if he wants.
-        if (permissionsCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{
-                            Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                            },
-                    REQUEST_MAPS);
-            return false;
-        } else {
-            permissionGranted = true;
-            return true;
-        }
-    }
-    //Method that handles permission response.
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.d(TAG, "onRequestPermissionsResult:  Map Request " + requestCode);
-        //TODO Write code to check permissions result overall.
-        if (requestCode == REQUEST_MAPS) {
-            //Receive permission result camera permission.
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //Camera Permissions has been granted, preview can be displayed.
-
-                //TODO Show Camera preview.
-                //Write Code here...
-
-                Toast.makeText(this, "Maps is now Open.", Toast.LENGTH_SHORT).show();
-                permissionGranted = true;
-            } else {
-                //Else all other permissions was denied. permission was denied.
-                Toast.makeText(this, "Maps permissions was denied.", Toast.LENGTH_LONG).show();
+        myMapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mapsIntent = new Intent(UserHomeActivity.this, ReceiptsMapsActivity.class);
+                startActivity(mapsIntent);
             }
-        } else {
-            //show permission result.
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
+        });
+
     }
+
 
     @Override
     protected void onStart() {

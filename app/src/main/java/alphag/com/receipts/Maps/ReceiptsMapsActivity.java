@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.google.android.gms.common.util.MapUtils;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -40,21 +39,24 @@ public class ReceiptsMapsActivity extends FragmentActivity implements OnMapReady
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
     private static final float DEFAULT_ZOOM = 15f;
     //Vars
-    private Boolean mLocationPermissionsGranted = false;
+    public final static int REQUEST_RECEIPT_MAPS = 5;
     private FusedLocationProviderClient mFusedLocationProviderClient;
+    private boolean permissionGranted;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setMarkers("7122 Arbutus Ave huntington Park 90255");
         setContentView(R.layout.activity_receipts_maps2);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        if (!mLocationPermissionsGranted) {
-            getLocationPermission();
+        checkPermissions();
+        if(permissionGranted) {
+            // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+        }
+        else{
+            onStart();
         }
 
     }
@@ -64,34 +66,12 @@ public class ReceiptsMapsActivity extends FragmentActivity implements OnMapReady
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng calstateLa = new LatLng(34.0667847, -118.1692549);
+        mMap.addMarker(new MarkerOptions().position(calstateLa).title("Cal State Los Angeles"));
+        mMap.getFocusedBuilding();
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(calstateLa));
     }
 
-    private void getLocationPermission() {
-        Log.d(TAG, "getLocationPermission: getting locations permissions");
-        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION};
-
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-
-
-            if (ContextCompat.checkSelfPermission(this.getApplicationContext(), COURSE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                mLocationPermissionsGranted = true;
-                Log.d(TAG, "Permission: Permission Granted");
-
-            } else {
-                ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_REQUEST_CODE);
-            }
-        }else{
-            ActivityCompat.requestPermissions(this,
-                    permissions,
-                    LOCATION_PERMISSION_REQUEST_CODE);
-        }
-    }
     public void setMarkers(String location){
         Geocoder gc = new Geocoder(ReceiptsMapsActivity.this);
         try {
@@ -114,7 +94,7 @@ public class ReceiptsMapsActivity extends FragmentActivity implements OnMapReady
         Log.d(TAG, "InitMap: initializing map" );
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         try {
-            if(mLocationPermissionsGranted){
+            if(permissionGranted){
                 Task location = mFusedLocationProviderClient.getLastLocation();
                 location.addOnCompleteListener(new OnCompleteListener() {
                     @Override
@@ -147,26 +127,58 @@ public class ReceiptsMapsActivity extends FragmentActivity implements OnMapReady
         mMap.addMarker(options);
         setMarkers("7122 Arbutus Ave Huntington park 90255");
     }
+    public boolean checkPermissions() {
+        //Checking for Write External Storage Permission.
+        //Checking for all permissions manifest State.
+        int permissionCheckAccessFineLocation = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+        int permissionCheckAccessCoarseLocation = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+        //TODO Write Code to check permissions for Geo Location.
+        // Permissions Check Int val will result 0 if all permissions was granted, other wise < 0 if 1 or many permissions were denied.
+        //TODO Edit a better way to check all permissions at once without needed to add.
+        Log.d(TAG, "checkPermissions: PERMISSION Map : " + permissionCheckAccessFineLocation + " PERMISSION Access fine location: " + permissionCheckAccessCoarseLocation );
+        int permissionsCheck = permissionCheckAccessFineLocation + permissionCheckAccessCoarseLocation;
+        //Allow the user to request permissions on the spot, if he wants.
+        if (permissionsCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    REQUEST_RECEIPT_MAPS);
+            return false;
+        } else {
+            permissionGranted = true;
+            return true;
+        }
+    }
+    //Method that handles permission response.
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d(TAG, "onRequestPermissionsResult:  Map Request " + requestCode);
+        //TODO Write code to check permissions result overall.
+        if (requestCode == REQUEST_RECEIPT_MAPS) {
+            //Receive permission result camera permission.
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //Camera Permissions has been granted, preview can be displayed.
 
+                //TODO Show Camera preview.
+                //Write Code here...
+
+                Toast.makeText(this, "Maps is now Accessible.", Toast.LENGTH_SHORT).show();
+                permissionGranted = true;
+            } else {
+                //Else all other permissions was denied. permission was denied.
+                Toast.makeText(this, "Maps permissions was denied.", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            //show permission result.
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        mLocationPermissionsGranted = false;
-
-        switch (requestCode){
-            case LOCATION_PERMISSION_REQUEST_CODE:{
-                if(grantResults.length > 0){
-                    for(int i = 0; i < grantResults.length; i++){
-                        if(grantResults[i] != PackageManager.PERMISSION_GRANTED){
-                            mLocationPermissionsGranted = false;
-                            Log.d(TAG, "onRequestPermissionsResult: permission failed");
-                            return;
-                        }
-                    }
-                    Log.d(TAG, "onRequestPermissionsResult: permission granted");
-                    mLocationPermissionsGranted = true;
-                }
-            }
+    protected void onStart() {
+        super.onStart();
+        if(!permissionGranted){
+            finish();
         }
     }
 }
