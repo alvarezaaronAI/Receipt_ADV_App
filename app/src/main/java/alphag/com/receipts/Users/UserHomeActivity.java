@@ -26,6 +26,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -70,7 +72,6 @@ public class UserHomeActivity extends AppCompatActivity{
         mReceiptsRV = (RecyclerView) findViewById(R.id.rv_users_home_receipts);
         mFloatingActionBt = (FloatingActionButton) findViewById(R.id.fab_new_receipt);
         myMapButton = (ImageButton) findViewById(R.id.mapButton);
-
 
         ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(UserHomeActivity.this,
                 android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.days));
