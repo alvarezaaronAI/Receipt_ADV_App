@@ -72,6 +72,7 @@ public class CameraDetect extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
     private DatabaseReference mRootRef;
+
     //FireBase Storage
     private FirebaseStorage mStorage;
     private StorageReference mStorageRef;
