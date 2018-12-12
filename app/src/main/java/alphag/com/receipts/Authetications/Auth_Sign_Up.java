@@ -53,9 +53,9 @@ public class Auth_Sign_Up extends AppCompatActivity {
     Button mCreateAccountBt;
     //FireBase Authentication
     private FirebaseAuth mAuth;
-    private FirebaseStorage mStorage;
-    private StorageReference mStorageRef;
+
     private byte[] mReceiptByteData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,19 +71,20 @@ public class Auth_Sign_Up extends AppCompatActivity {
         mCreateAccountBt = (Button) findViewById(R.id.bt_auth_sign_up_create_account);
         //Firebase Authentication Instance
         mAuth = FirebaseAuth.getInstance();
-        mStorage = FirebaseStorage.getInstance();
-        mStorageRef = mStorage.getReference();
+
         //mDefaultReciept = mStorage.getReference().child("https://firebasestorage.googleapis.com/v0/b/receipts-alphag.appspot.com/o/defaults%2Freceipts%2Fdefault_1.png?alt=media&token=daf6501a-5db1-4126-b202-f3bcbb800d79");
 
     }
+
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        if (mAuth != null){
+        if (mAuth != null) {
             //Handle User Already Sign in
         }
     }
+
     //This should make a new account and put in the database
     public void create_New_Account_Handler(View view) {
         // changed email from final to not final String
@@ -121,22 +122,22 @@ public class Auth_Sign_Up extends AppCompatActivity {
     }
 
     public void validate(String firstNameTemp, String lastNameTemp, String emailTemp,
-                         String passWordTemp, String passWordMatchTemp){
-        try{
+                         String passWordTemp, String passWordMatchTemp) {
+        try {
             final String validFirstName = validateName(firstNameTemp);
             final String validLastName = validateName(lastNameTemp);
             final String validEmail = validateEmail(emailTemp);
             final String validPassword = validatePassword(passWordTemp, passWordMatchTemp);
 
             //Setting UP Users Account.
-            mAuth.createUserWithEmailAndPassword(validEmail,validPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            mAuth.createUserWithEmailAndPassword(validEmail, validPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         String receiptUID = UUID.randomUUID().toString();
                         Receipt defaultReceipt = new Receipt(
                                 receiptUID,
-                                "Pollo Loco" ,
+                                "Pollo Loco",
                                 "12345",
                                 "67890",
                                 "123 Default Address Ave, Los Angeles CA 90022",
@@ -147,62 +148,14 @@ public class Auth_Sign_Up extends AppCompatActivity {
                         ArrayList<Receipt> defaultReceiptsUser = new ArrayList<>();
                         defaultReceiptsUser.add(defaultReceipt);
                         //Creating User data
-                        User userTemp = new User(validFirstName,validLastName,validEmail,defaultReceiptsUser);
+                        User userTemp = new User(validFirstName, validLastName, validEmail, defaultReceiptsUser);
                         //Getting current User
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
 
                         //Setting Up User DataBase
-                        new FireBaseDataBaseUtils().add_New_User_DataBase(user,userTemp);
+                        new FireBaseDataBaseUtils().add_New_User_DataBase(user, userTemp);
 
-                        //Setting Up Storage before anything
-                        StorageReference mUsers = mStorageRef.child("" + FireBaseDataBaseUtils.getStorageUsers());
-                        StorageReference mUser = mUsers.child("" + user.getUid());
-                        StorageReference mUserReceipts = mUser.child("" + FireBaseDataBaseUtils.getStrorageUsersReceipts());
-
-                        Resources res = getResources();
-                        Drawable drawable = res.getDrawable(R.drawable.ic_texture_black_24dp);
-
-                        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                        byte[] data = baos.toByteArray();
-
-                        UploadTask uploadTask = mUserReceipts.putBytes(data);
-                        uploadTask.addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                Log.d(TAG, "onFailure: Path Generated Failed");
-                            }
-                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Log.d(TAG, "onSuccess: Path Generated Success");
-                            }
-                        });
-
-
-//                        //Setting Up Users Storage Plus Attach a Default Picture.
-//                        String createUsersPath = "users/" + user.getUid() + "/receipts/" + receiptUID +".png";
-//      b                   StorageReference usersReceiptsRef = mStorage.getReference(createUsersPath);
-//
-//                        StorageMetadata metadata = new StorageMetadata
-//                                .Builder()
-//                                .setCustomMetadata("Text","Default Receipt Picture")
-//                                .build();
-//
-//                        UploadTask uploadUsersStorage = usersReceiptsRef.putBytes(mReceiptByteData,metadata);
-//
-//                        Log.d(TAG, "onComplete:  upload storage: " + (uploadUsersStorage == null));
-//
-//                        uploadUsersStorage.addOnSuccessListener(Auth_Sign_Up.this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                            @Override
-//                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                                mProgressBar.setVisibility(View.GONE);
-//                                mCreateAccountBt.setEnabled(true);
-//                                Log.d(TAG, "onSuccess: Created A new account");
-//                            }
-//                        });
 
                         Intent intent = new Intent(Auth_Sign_Up.this, Auth_Sign_In.class);
                         //Start the Intent.
@@ -210,14 +163,13 @@ public class Auth_Sign_Up extends AppCompatActivity {
                         //Sign in User if its Successful
 
                         Log.d(TAG, "onComplete: Success : To Create a new user.");
-                    }
-                    else{
+                    } else {
                         Log.d(TAG, "onComplete: Failed : To create a new user.");
                         Toast.makeText(Auth_Sign_Up.this, "Failed to Create Special Token", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-        } catch (Exception e){
+        } catch (Exception e) {
             emailTemp = null;
             passWordTemp = null;
             mCreateAccountBt.setEnabled(true);
@@ -226,15 +178,15 @@ public class Auth_Sign_Up extends AppCompatActivity {
         }
     }
 
-    public String validateName(String name){
-        if(name != null || name != ""){
-            for(int i = 0 ; i < name.length() ; i++){
-                if(Character.isLetter(i)){
+    public String validateName(String name) {
+        if (name != null || name != "") {
+            for (int i = 0; i < name.length(); i++) {
+                if (Character.isLetter(i)) {
                     name = name.substring(0, 1).toUpperCase() +
                             name.substring(1, name.length());
                     Toast.makeText(this, "NAME: " + name, Toast.LENGTH_SHORT).show();
 
-                }else{
+                } else {
                     return name;
                 }
             }
@@ -242,8 +194,8 @@ public class Auth_Sign_Up extends AppCompatActivity {
         return null;
     }
 
-    public String validateEmail(String email){
-        if (email != null && email.contains("@") && email.contains(".")){
+    public String validateEmail(String email) {
+        if (email != null && email.contains("@") && email.contains(".")) {
             return email;
         }
         Toast.makeText(this, "Invalid Email", Toast.LENGTH_SHORT).show();
@@ -252,8 +204,9 @@ public class Auth_Sign_Up extends AppCompatActivity {
 
 
     public final int MIN_PASS_LENGTH = 6;
-    public String validatePassword(String password, String reenteredPassword){
-        if(password.length() >= MIN_PASS_LENGTH && password.equals(reenteredPassword)){
+
+    public String validatePassword(String password, String reenteredPassword) {
+        if (password.length() >= MIN_PASS_LENGTH && password.equals(reenteredPassword)) {
             return password;
         }
         Log.d(TAG, "validatePassword: CHECK PASSWORD");
