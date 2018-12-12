@@ -1,14 +1,9 @@
 package alphag.com.receipts.Users;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,13 +42,8 @@ public class UserHomeActivity extends AppCompatActivity {
     ImageButton myMapButton;
     FloatingActionButton mFloatingActionBt;
 
-    Toast mToast;
-
     RecyclerView mReceiptsRV;
     ReceiptAdapter mReceiptsAdapter;
-
-    public boolean permissionGranted;
-    public final static int REQUEST_MAPS = 4;
     //Firebase Database
     DatabaseReference mRootRef;
     DatabaseReference mUsersRef;
@@ -85,7 +75,6 @@ public class UserHomeActivity extends AppCompatActivity {
         String userUId = currentUser.getUid();
         DatabaseReference userRootRef = mUsersRef.child(userUId);
         DatabaseReference userReceiptRootRef = userRootRef.child(FireBaseDataBaseUtils.getReceiptsKey());
-
 
         userReceiptRootRef.addValueEventListener(new ValueEventListener() {
             @Override
