@@ -1,90 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     >
-    <LinearLayout
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/graident_background"
-        android:orientation="vertical">
-        <ImageButton
-            android:id="@+id/ib_receipt_confirmation_image"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:layout_weight="2"
-            android:onClick="receipt_confirmation_image_handle"
-            tools:srcCompat="@tools:sample/backgrounds/scenic[3]" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:padding="22dp"
+        android:background="@color/backgroudColor"
+        >
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Name"
+            android:textColor="@color/textBoxColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/et_receipt_confirmation_name"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:background="@drawable/rounded_edittext"
             android:hint="@string/example_title"
+            android:padding="5dp"
             android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            android:textColor="@color/editTextColor"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_name" />
 
+        <TextView
+            android:id="@+id/tv_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Address"
+            android:textColor="@color/textBoxColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_receipt_confirmation_name" />
 
         <EditText
             android:id="@+id/et_receipt_confirmation_address"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1"
+            android:background="@drawable/rounded_edittext"
             android:hint="@string/example_address"
+            android:padding="5dp"
             android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            android:textColor="@color/editTextColor"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_address" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Date"
+            android:textColor="@color/textBoxColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_receipt_confirmation_address" />
 
         <EditText
             android:id="@+id/et_receipt_confirmation_date"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1"
+            android:background="@drawable/rounded_edittext"
             android:hint="@string/example_date"
+            android:padding="5dp"
             android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            android:textColor="@color/editTextColor"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_date" />
 
+        <TextView
+            android:id="@+id/tv_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Total"
+            android:textColor="@color/textBoxColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_receipt_confirmation_date" />
 
         <EditText
             android:id="@+id/et_receipt_confirmation_total"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1"
+            android:background="@drawable/rounded_edittext"
             android:hint="@string/example_total"
+            android:padding="5dp"
             android:textAlignment="center"
-
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            android:textColor="@color/editTextColor"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_total" />
 
         <Button
             android:id="@+id/bt_receipt_confirmation_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="0"
-            android:text="@string/confirm"
+            android:background="@drawable/rounded_confirmbutton"
             android:onClick="receipt_confirmation_handle"
-            />
+            android:padding="5dp"
+            android:text="@string/confirm"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ib_receipt_confirmation_image" />
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/bt_receipt_confirmation_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:background="@drawable/rounded_confirmbutton"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ib_receipt_confirmation_image"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/ib_receipt_confirmation_image"
+            android:layout_width="100dp"
+            android:layout_height="200dp"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:onClick="receipt_confirmation_image_handle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_receipt_confirmation_total"
+            tools:srcCompat="@tools:sample/backgrounds/scenic[3]" />
+
+    </android.support.constraint.ConstraintLayout>
 
     <ProgressBar
+        android:id="@+id/pb_receipt_confirmation_progressbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:id="@+id/pb_receipt_confirmation_progressbar"
-
-
+        android:indeterminateDrawable="@drawable/progress"
         />
 
 </RelativeLayout>
