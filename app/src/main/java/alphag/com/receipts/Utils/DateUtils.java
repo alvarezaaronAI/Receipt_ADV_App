@@ -28,7 +28,7 @@ public class DateUtils {
 
     public static ArrayList<Receipt> filter(ArrayList<Receipt> receipts, int days){
 
-        ArrayList<Receipt> filteredReceipts = null;
+        ArrayList<Receipt> filteredReceipts = new ArrayList<>();
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         Date date = new Date();
 

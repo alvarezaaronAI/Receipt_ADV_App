@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#ffffff"
     android:orientation="vertical"
-    tools:context=".Spinner.TodayActivity">
+    tools:context=".Spinner.BiWeeklyActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -31,37 +31,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp"
-        >
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal"
-           >
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/total_spending"
-                />
-           <TextView
-               android:id="@+id/tv_today_total"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:hint="@string/sample_total"
-               android:layout_weight="1"
-               />
+                android:text="@string/total_spending" />
 
-       </LinearLayout>
+            <TextView
+                android:id="@+id/tv_bi_weekly_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/sample_total" />
+
+        </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_today_activity"
+            android:id="@+id/rv_bi_weekly_activity"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
 
         </android.support.v7.widget.RecyclerView>
     </LinearLayout>
-
-
 </LinearLayout>

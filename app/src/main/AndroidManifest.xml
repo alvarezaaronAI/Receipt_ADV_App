@@ -67,8 +67,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".Maps.ReceiptsMapsActivity"/>
+        <activity android:name=".Maps.ReceiptsMapsActivity" />
+        <activity android:name=".Spinner.WeekActivity" />
+        <activity android:name=".Spinner.MonthActivity" />
+        <activity android:name=".Spinner.BiWeeklyActivity"></activity>
     </application>
 
 </manifest>

@@ -1,16 +1,11 @@
 package alphag.com.receipts.Spinner;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,17 +18,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import alphag.com.receipts.R;
 import alphag.com.receipts.Users.ReceiptAdapter;
-import alphag.com.receipts.Users.UserHomeActivity;
 import alphag.com.receipts.Utils.DateUtils;
 import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
 import alphag.com.receipts.models.Receipt;
 
-public class TodayActivity extends AppCompatActivity {
-    private static final String TAG = "TodayActivity";
+public class MonthActivity extends AppCompatActivity {
+    private static final String TAG = "MonthActivity";
 
     TextView mTotal;
 
@@ -49,14 +42,14 @@ public class TodayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_today);
+        setContentView(R.layout.activity_month);
 
-        mTotal = (TextView) findViewById(R.id.tv_today_total);
+        mTotal = (TextView) findViewById(R.id.tv_month_total);
 
         mRootRef = FirebaseDatabase.getInstance().getReference();
         mUsersRef = mRootRef.child(FireBaseDataBaseUtils.getUsersKey());
 
-        mReceiptsRV = (RecyclerView) findViewById(R.id.rv_today_activity);
+        mReceiptsRV = (RecyclerView) findViewById(R.id.rv_month_activity);
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String userUId = currentUser.getUid();
@@ -66,7 +59,7 @@ public class TodayActivity extends AppCompatActivity {
         userReceiptRootRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               ArrayList<Receipt> tempFinalReceipts = new ArrayList<>();
+                ArrayList<Receipt> tempFinalReceipts = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Receipt receiptTemp = new Receipt(
                             "" + snapshot.child(FireBaseDataBaseUtils.getReceiptUid()).getValue(),
@@ -79,14 +72,16 @@ public class TodayActivity extends AppCompatActivity {
                             Double.valueOf(snapshot.child(FireBaseDataBaseUtils.getReceiptTotal()).getValue().toString()));
                     tempFinalReceipts.add(receiptTemp);
                 }
-                mfinalReceipts = DateUtils.filter(tempFinalReceipts,1);
+                mfinalReceipts = DateUtils.filter(tempFinalReceipts,30);
+
                 for (Receipt receipt: mfinalReceipts) {
                     totalReceipt += receipt.getTotal();
                 }
                 mTotal.append("" + totalReceipt);
-                Toast.makeText(TodayActivity.this, "User Data was Appended", Toast.LENGTH_SHORT).show();
 
-                LinearLayoutManager layoutManager = new LinearLayoutManager(TodayActivity.this);
+                Toast.makeText(MonthActivity.this, "User Data was Appended", Toast.LENGTH_SHORT).show();
+
+                LinearLayoutManager layoutManager = new LinearLayoutManager(MonthActivity.this);
                 mReceiptsRV.setLayoutManager(layoutManager);
                 mReceiptsRV.setHasFixedSize(true);
 
@@ -101,5 +96,4 @@ public class TodayActivity extends AppCompatActivity {
             }
         });
     }
-
 }
