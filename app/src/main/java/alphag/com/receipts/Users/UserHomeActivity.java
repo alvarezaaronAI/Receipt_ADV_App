@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -30,6 +31,10 @@ import java.util.ArrayList;
 import alphag.com.receipts.FireBaseMLK.CameraDetect;
 import alphag.com.receipts.Maps.ReceiptsMapsActivity;
 import alphag.com.receipts.R;
+import alphag.com.receipts.Spinner.BiWeeklyActivity;
+import alphag.com.receipts.Spinner.MonthActivity;
+import alphag.com.receipts.Spinner.TodayActivity;
+import alphag.com.receipts.Spinner.WeekActivity;
 import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
 import alphag.com.receipts.models.Receipt;
 
@@ -70,7 +75,6 @@ public class UserHomeActivity extends AppCompatActivity {
         myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mySpinner.setAdapter(myAdapter);
 
-
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String userUId = currentUser.getUid();
 
@@ -93,16 +97,15 @@ public class UserHomeActivity extends AppCompatActivity {
                             Double.valueOf(snapshot.child(FireBaseDataBaseUtils.getReceiptTotal()).getValue().toString()));
                     mfinalReceipts.add(receiptTemp);
 
-                    Log.d(TAG, "onDataChange: " + receiptTemp.toString());
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(UserHomeActivity.this);
-                    mReceiptsRV.setLayoutManager(layoutManager);
-                    mReceiptsRV.setHasFixedSize(true);
-
-                    Log.d(TAG, "onCreate: " + mfinalReceipts.get(0));
-                    mReceiptsAdapter = new ReceiptAdapter(mfinalReceipts);
-                    mReceiptsRV.setAdapter(mReceiptsAdapter);
                 }
                 Toast.makeText(UserHomeActivity.this, "User Data was Appended", Toast.LENGTH_SHORT).show();
+                LinearLayoutManager layoutManager = new LinearLayoutManager(UserHomeActivity.this);
+                mReceiptsRV.setLayoutManager(layoutManager);
+                mReceiptsRV.setHasFixedSize(true);
+
+                Log.d(TAG, "onCreate: " + mfinalReceipts.get(0));
+                mReceiptsAdapter = new ReceiptAdapter(mfinalReceipts);
+                mReceiptsRV.setAdapter(mReceiptsAdapter);
             }
 
             @Override
@@ -126,7 +129,7 @@ public class UserHomeActivity extends AppCompatActivity {
                 startActivity(mapsIntent);
             }
         });
-
+        appendToSpinner();
     }
 
 
@@ -151,5 +154,39 @@ public class UserHomeActivity extends AppCompatActivity {
         super.onStop();
     }
 
+    private void appendToSpinner() {
+        mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                view.setVisibility(View.GONE);
+                String item = adapterView.getItemAtPosition(i).toString();
+                switch (i) {
+                    case 1:
+                        Intent todayDay = new Intent(UserHomeActivity.this, TodayActivity.class);
+                        startActivity(todayDay);
+                        break;
 
+                    case 2:
+                        Intent sevenDay = new Intent(UserHomeActivity.this, WeekActivity.class);
+                        startActivity(sevenDay);
+                        break;
+
+                    case 3:
+                        Intent fourteenDay = new Intent(UserHomeActivity.this, BiWeeklyActivity.class);
+                        startActivity(fourteenDay);
+                        break;
+
+                    case 4:
+                        Intent thirtyDay = new Intent(UserHomeActivity.this, MonthActivity.class);
+                        startActivity(thirtyDay);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
 }
