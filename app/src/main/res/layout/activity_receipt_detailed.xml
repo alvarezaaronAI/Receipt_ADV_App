@@ -1,72 +1,167 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/graident_background"
-    android:orientation="vertical"
-    android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:background="#FFFFFF">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backgroudColor"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageButton
-        android:id="@+id/iv_receipt_detailed_image"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_gravity="center"
-        android:layout_weight="2"
-        android:contentDescription="@string/receipt_image"
-        tools:srcCompat="@tools:sample/backgrounds/scenic[15]"
-        android:onClick="receipt_detailed_handler"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Details"
+            android:textColor="@color/editTextColor"
+            android:layout_gravity="center"
+            android:textSize="35dp"
+            />
+
+    </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Name"
+        android:textColor="@color/editTextColor"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
         />
 
     <TextView
         android:id="@+id/tv_receipt_detail_title"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity  ="center"
-        android:layout_weight="1"
+        android:background="@drawable/textboxbackground"
         android:text="@string/sample_title"
         android:textAlignment="center"
-        android:textSize="32sp" />
-
+        android:padding="5dp"
+        android:textSize="18sp"
+        android:textColor="@color/textBoxColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_name"
+        />
 
     <TextView
-        android:id="@+id/tv_receipt_detail_price"
+        android:id="@+id/tv_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:text="@string/sample_total"
-        android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/tv_receipt_detail_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:text="@string/sample_date"
-        android:textSize="20sp" />
+        android:padding="10dp"
+        android:text="Address"
+        android:textColor="@color/editTextColor"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_receipt_detail_title"
+        />
 
     <TextView
         android:id="@+id/tv_receipt_detail_address"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="1"
         android:text="@string/sample_address"
         android:textAlignment="center"
-        android:textSize="20sp" />
+        android:background="@drawable/textboxbackground"
+        android:textSize="18sp"
+        android:textColor="@color/textBoxColor"
+        android:padding="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_address"
+        />
 
-    <Button
-        android:id="@+id/bt_receipt_detail_confirmation"
+    <TextView
+        android:id="@+id/tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Date"
+        android:textColor="@color/editTextColor"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_receipt_detail_address"
+        />
+
+    <TextView
+        android:id="@+id/tv_receipt_detail_date"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
         android:layout_gravity="center"
-        android:onClick="receipt_confirmation_handler"
+        android:padding="5dp"
+        android:text="@string/sample_date"
+        android:textSize="18sp"
+        android:background="@drawable/textboxbackground"
+        android:textColor="@color/textBoxColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_date"
+        />
 
-        android:text="Confirm Receipt" />
+    <TextView
+        android:id="@+id/tv_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="Total"
+        android:textSize="18sp"
+        android:textColor="@color/editTextColor"
+        android:outlineAmbientShadowColor="#ffffff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_receipt_detail_date"
+        />
+
+    <TextView
+        android:id="@+id/tv_receipt_detail_price"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:text="@string/sample_total"
+        android:textSize="18sp"
+        android:padding="5dp"
+        android:textColor="@color/textBoxColor"
+        android:background="@drawable/textboxbackground"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_total"
+        />
+
+    <ImageButton
+        android:id="@+id/iv_receipt_detailed_image"
+        android:layout_width="100dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:contentDescription="@string/receipt_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_receipt_detail_price"
+        tools:srcCompat="@tools:sample/backgrounds/scenic[15]"
+        android:onClick="receipt_detailed_handler"
+        />
 
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
