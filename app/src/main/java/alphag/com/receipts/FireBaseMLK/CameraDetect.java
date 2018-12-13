@@ -84,6 +84,7 @@ public class CameraDetect extends AppCompatActivity {
     private Bitmap imageBitmap;
     public String mCurrentPhotoPath;
     public boolean permissionGranted;
+
     //Request Codes
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_TAKE_PHOTO = 1;

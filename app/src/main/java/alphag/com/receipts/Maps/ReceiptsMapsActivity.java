@@ -60,7 +60,9 @@ public class ReceiptsMapsActivity extends FragmentActivity implements OnMapReady
         }
 
     }
-
+    private void testMarkers() {
+        setMarkers("5151 State University Dr, Los Angeles, CA 90032");
+    }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -68,8 +70,9 @@ public class ReceiptsMapsActivity extends FragmentActivity implements OnMapReady
         // Add a marker in Sydney and move the camera
         LatLng calstateLa = new LatLng(34.0667847, -118.1692549);
         mMap.addMarker(new MarkerOptions().position(calstateLa).title("Cal State Los Angeles"));
-        mMap.getFocusedBuilding();
         mMap.moveCamera(CameraUpdateFactory.newLatLng(calstateLa));
+        moveCamera(calstateLa,DEFAULT_ZOOM, "String");
+
     }
 
     public void setMarkers(String location){
@@ -84,7 +87,7 @@ public class ReceiptsMapsActivity extends FragmentActivity implements OnMapReady
             double log = fin1.getLongitude();
 
             LatLng latlng = new LatLng(lat,log);
-            MarkerOptions options = new MarkerOptions().position(latlng).title("Spot");
+            MarkerOptions options = new MarkerOptions().position(latlng).title("Spot ");
             mMap.addMarker(options);
         } catch (IOException e) {
             e.printStackTrace();
