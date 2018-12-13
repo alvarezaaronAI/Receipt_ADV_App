@@ -73,9 +73,10 @@ public class UserHomeActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         String userUId = currentUser.getUid();
+
         DatabaseReference userRootRef = mUsersRef.child(userUId);
         DatabaseReference userReceiptRootRef = userRootRef.child(FireBaseDataBaseUtils.getReceiptsKey());
-
+        Log.d(TAG, "onCreate: " +userReceiptRootRef.getPath());
         userReceiptRootRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
