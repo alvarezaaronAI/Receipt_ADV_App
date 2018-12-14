@@ -15,7 +15,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/background_color"
+        android:background="@color/backgroudColor"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme">
 
@@ -41,12 +41,19 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                android:paddingBottom="5dp"
                 android:text="@string/total_spending" />
 
             <TextView
                 android:id="@+id/tv_month_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="20sp"
+
+                android:textColor="@android:color/black"
+                android:paddingBottom="5dp"
                 android:layout_weight="1"
                 android:hint="@string/sample_total" />
 

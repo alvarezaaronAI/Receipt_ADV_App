@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,7 +84,8 @@ public class TodayActivity extends AppCompatActivity {
                 for (Receipt receipt: mfinalReceipts) {
                     totalReceipt += receipt.getTotal();
                 }
-                mTotal.append("" + totalReceipt);
+                DecimalFormat numberFormat = new DecimalFormat("#.00");
+                mTotal.append("" + numberFormat.format(totalReceipt));
                 Toast.makeText(TodayActivity.this, "User Data was Appended", Toast.LENGTH_SHORT).show();
 
                 LinearLayoutManager layoutManager = new LinearLayoutManager(TodayActivity.this);
