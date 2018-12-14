@@ -3,6 +3,8 @@ package alphag.com.receipts.Users;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -116,8 +118,10 @@ public class ReceiptDetailedActivity extends AppCompatActivity {
                     Log.d(TAG, "onSuccess: Image Byte Downloaded");
 
                     Bitmap bitmap = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
+                    Bitmap rotatedImage = rotateBitmap(bitmap,90);
+                    Bitmap fixedImage = resizedBitmap(rotatedImage,500, 750);
                     Toast.makeText(ReceiptDetailedActivity.this, "Appended Image Receipt", Toast.LENGTH_SHORT).show();
-                    mImageButton.setImageBitmap(bitmap);
+                    mImageButton.setImageBitmap(fixedImage);
 
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -142,5 +146,36 @@ public class ReceiptDetailedActivity extends AppCompatActivity {
 
     public void receipt_detailed_handler(View view) {
 
+    }
+    private Bitmap rotateBitmap(Bitmap original, float degrees) {
+        int width = original.getWidth();
+        int height = original.getHeight();
+
+        Matrix matrix = new Matrix();
+
+        matrix.postRotate(degrees);
+
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(original, width, height, true);
+
+        Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+
+        return rotatedBitmap;
+    }
+
+    public Bitmap resizedBitmap(Bitmap bitmap, int newWidth, int newHeight) {
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bitmap, 0, 0, width, height, matrix, false);
+        bitmap.recycle();
+        return resizedBitmap;
     }
 }
