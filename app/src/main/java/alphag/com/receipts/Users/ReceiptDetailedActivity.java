@@ -1,14 +1,19 @@
 package alphag.com.receipts.Users;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -17,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import alphag.com.receipts.R;
 import alphag.com.receipts.Utils.FireBaseDataBaseUtils;
@@ -25,11 +31,13 @@ import alphag.com.receipts.models.Receipt;
 public class ReceiptDetailedActivity extends AppCompatActivity {
     //Log Cat
     private static final String TAG = "ReceiptDetailedActivity";
+
     //Member Variables
     TextView mReceiptTitle;
     TextView mReceiptTotal;
     TextView mReceiptDate;
     TextView mReceiptAddress;
+    ImageButton mImageButton;
     String mReceiptUID;
     //Firebase Database
     private DatabaseReference mRootRef;
@@ -41,7 +49,10 @@ public class ReceiptDetailedActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrentUser;
     //Storage
-    FirebaseStorage storage = FirebaseStorage.getInstance();
+    FirebaseStorage mStorageRef;
+    //Image
+    private byte[] imageByte = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +63,7 @@ public class ReceiptDetailedActivity extends AppCompatActivity {
         mReceiptTotal = (TextView) findViewById(R.id.tv_receipt_detail_price);
         mReceiptDate = (TextView) findViewById(R.id.tv_receipt_detail_date);
         mReceiptAddress = (TextView) findViewById(R.id.tv_receipt_detail_address);
+        mImageButton = (ImageButton) findViewById(R.id.iv_receipt_detailed_image);
         //Authentication
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser();
@@ -60,6 +72,10 @@ public class ReceiptDetailedActivity extends AppCompatActivity {
         mUsersRef = mRootRef.child(FireBaseDataBaseUtils.getUsersKey());
         mCurrentUserRef = mUsersRef.child(mCurrentUser.getUid());
         mReceiptsRef = mCurrentUserRef.child(FireBaseDataBaseUtils.getReceiptsKey());
+
+        //Accessing Storage Database
+        mStorageRef = FirebaseStorage.getInstance();
+        StorageReference storageRefReference = mStorageRef.getReference();
 
         Intent previousIntent = getIntent();
         if (previousIntent.hasExtra(ReceiptAdapter.RECEIPT_UID)) {
@@ -86,6 +102,33 @@ public class ReceiptDetailedActivity extends AppCompatActivity {
                     Toast.makeText(ReceiptDetailedActivity.this, "Failed to Append Receipt Data", Toast.LENGTH_SHORT).show();
                 }
             });
+            StorageReference mUsersStorageRef = storageRefReference.child(FireBaseDataBaseUtils.getStorageUsers());
+            StorageReference mUserStorageRef = mUsersStorageRef.child(mCurrentUser.getUid());
+            StorageReference mUSerReceiptsRef = mUserStorageRef.child(FireBaseDataBaseUtils.getStrorageUsersReceipts());
+            StorageReference mUserReceiptRef = mUSerReceiptsRef.child(mReceiptUID);
+
+
+            final long TEN_MEGABYTE = 10 * (1024 * 1024);
+            mUserReceiptRef.getBytes(TEN_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    imageByte = bytes;
+                    Log.d(TAG, "onSuccess: Image Byte Downloaded");
+
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
+                    Toast.makeText(ReceiptDetailedActivity.this, "Appended Image Receipt", Toast.LENGTH_SHORT).show();
+                    mImageButton.setImageBitmap(bitmap);
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                    exception.printStackTrace();
+                    Log.d(TAG, "onFailure: Did not Download Anything");
+                }
+            });
+
 
         } else {
             Toast.makeText(this, "No Receipt Located", Toast.LENGTH_SHORT).show();
@@ -93,8 +136,8 @@ public class ReceiptDetailedActivity extends AppCompatActivity {
     }
 
 
-
     public void receipt_confirmation_handler(View view) {
+
     }
 
     public void receipt_detailed_handler(View view) {
