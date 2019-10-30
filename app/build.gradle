@@ -6,8 +6,8 @@ android {
         applicationId "alphag.com.receipts"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 3
-        versionName "3.0"
+        versionCode 1
+        versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -31,16 +31,16 @@ dependencies {
     //----------------------
 
     //-Modification by Aaron Alvarez- Dependencies
-    implementation 'com.google.firebase:firebase-core:17.2.1'
-    implementation 'com.google.firebase:firebase-auth:19.1.0'
-    implementation 'com.google.firebase:firebase-database:19.2.0'
-    implementation 'com.google.firebase:firebase-ml-vision:24.0.0'
-    implementation 'com.google.firebase:firebase-storage:19.1.0'
+    implementation 'com.google.firebase:firebase-core:16.0.4'
+    implementation 'com.google.firebase:firebase-auth:16.0.5'
+    implementation 'com.google.firebase:firebase-database:16.0.4'
+    implementation 'com.google.firebase:firebase-ml-vision:17.0.1'
+    implementation 'com.google.firebase:firebase-storage:16.0.4'
     //-------------------------------
     //Grod
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation 'com.google.maps.android:android-maps-utils:0.5'
+    implementation 'com.google.android.gms:play-services-maps:16.0.0'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.google.maps.android:android-maps-utils:0.5+'
 
 }
 //-Modification by Aaron Alvarez- Plugins
