@@ -129,7 +129,8 @@ public class UserHomeActivity extends AppCompatActivity {
                 startActivity(mapsIntent);
             }
         });
-        appendToSpinner();
+        //TODO : Fix Budget Conversion : Disabled for now.
+        //appendToSpinner();
     }
 
 
