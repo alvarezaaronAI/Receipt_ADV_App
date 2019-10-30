@@ -7,11 +7,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-<<<<<<< HEAD
-        classpath 'com.android.tools.build:gradle:3.4.1'
-=======
         classpath 'com.android.tools.build:gradle:3.5.1'
->>>>>>> 0d01aced511a3f2c7640e854da6281987da610ed
 
         //-MODIFICATION BY AARON ALVAREZ-
         // Aaron Alvarez - dependecies for GOOGLE VISION TEXT RECOGNITION
