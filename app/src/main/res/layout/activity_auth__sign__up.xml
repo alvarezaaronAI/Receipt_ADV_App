@@ -41,7 +41,9 @@
                 android:fontFamily="sans-serif-condensed"
                 android:hint="@string/hint_first_name"
                 android:paddingStart="22dp"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:inputType="text"
+                />
 
             <EditText
                 android:id="@+id/et_last_name_sign_up"
@@ -53,7 +55,9 @@
                 android:fontFamily="sans-serif-condensed"
                 android:hint="@string/hint_last_name"
                 android:paddingStart="22dp"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:inputType="text"
+                />
         </LinearLayout>
 
         <TextView
@@ -75,7 +79,9 @@
             android:hint="@string/email_example"
             android:padding="16dp"
             android:textAlignment="center"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:inputType="text"
+            />
 
         <TextView
             android:layout_width="match_parent"
@@ -97,7 +103,9 @@
             android:hint="@string/password"
             android:padding="16dp"
             android:textAlignment="center"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:inputType="textPassword"
+            />
 
         <TextView
             android:layout_width="match_parent"
@@ -108,7 +116,8 @@
             android:textAlignment="center"
             android:textColor="@color/textBoxColor"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            />
 
         <EditText
             android:id="@+id/et_password_match_sign_up"
@@ -119,7 +128,9 @@
             android:hint="@string/password"
             android:padding="16dp"
             android:textAlignment="center"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:inputType="textPassword"
+            />
 
         <Button
             android:id="@+id/bt_auth_sign_up_create_account"
