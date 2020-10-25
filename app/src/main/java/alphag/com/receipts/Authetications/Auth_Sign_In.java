@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -24,6 +27,7 @@ public class Auth_Sign_In extends AppCompatActivity {
     //Member Variables
     EditText mEmailSignIn;
     EditText mPassWordIn;
+    Button mLoginButton;
 
     //Firebase Authentication
     FirebaseAuth mAuth;
@@ -33,8 +37,15 @@ public class Auth_Sign_In extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth__sign__in);
         //Reference
-        mEmailSignIn = (EditText) findViewById(R.id.et_email_sign_in);
-        mPassWordIn = (EditText) findViewById(R.id.et_password_sign_in);
+        mEmailSignIn = findViewById(R.id.et_email_sign_in);
+        mPassWordIn = findViewById(R.id.et_password_sign_in);
+        mLoginButton = findViewById(R.id.bt_login_sign_in);
+
+        mEmailSignIn.addTextChangedListener(loginTextWatcher);
+        mPassWordIn.addTextChangedListener(loginTextWatcher);
+        //Set Button as disabled as default as soon as app is started
+        mLoginButton.setEnabled(false);
+
         //Firebase Authentication Instance
         mAuth = FirebaseAuth.getInstance();
         Log.d(TAG, "onCreate: " + mAuth.getUid());
@@ -61,9 +72,11 @@ public class Auth_Sign_In extends AppCompatActivity {
     //Method that will Handle Sign up A User
     public void sign_In_Handler(View view) {
         String emailTemp = mEmailSignIn.getText().toString();
-        String passsWordTemp = mPassWordIn.getText().toString();
-
-        mAuth.signInWithEmailAndPassword(emailTemp, passsWordTemp)
+        String passwordTemp = mPassWordIn.getText().toString();
+        Log.d(TAG, "credentials check");
+        Log.d(TAG, emailTemp);
+        Log.d(TAG, passwordTemp);
+        mAuth.signInWithEmailAndPassword(emailTemp, passwordTemp)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -93,4 +106,24 @@ public class Auth_Sign_In extends AppCompatActivity {
         //Start the Intent.
         startActivity(intent);
     }
+
+    //Text Edit Listener for handling toggling login button
+    private TextWatcher loginTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            String email = mEmailSignIn.getText().toString().trim();
+            String password = mPassWordIn.getText().toString().trim();
+            mLoginButton.setEnabled(!email.isEmpty() && !password.isEmpty());
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
 }
