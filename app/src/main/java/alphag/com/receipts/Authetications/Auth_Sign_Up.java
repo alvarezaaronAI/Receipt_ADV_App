@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +36,7 @@ public class Auth_Sign_Up extends AppCompatActivity {
     EditText mPassWordMatch;
     ProgressBar mProgressBar;
     Button mCreateAccountBt;
+
     //FireBase Authentication
     private FirebaseAuth mAuth;
 
@@ -52,6 +55,16 @@ public class Auth_Sign_Up extends AppCompatActivity {
         mProgressBar = (ProgressBar) findViewById(R.id.pb_auth_sign_up);
         mProgressBar.setVisibility(View.GONE);
         mCreateAccountBt = (Button) findViewById(R.id.bt_auth_sign_up_create_account);
+
+        mFirstName.addTextChangedListener(loginTextWatcher);
+        mLastName.addTextChangedListener(loginTextWatcher);
+        mEmail.addTextChangedListener(loginTextWatcher);
+        mPassWord.addTextChangedListener(loginTextWatcher);
+        mPassWordMatch.addTextChangedListener(loginTextWatcher);
+
+        //Set Button as disabled as default as soon as app is started
+        mCreateAccountBt.setEnabled(false);
+
         //Firebase Authentication Instance
         mAuth = FirebaseAuth.getInstance();
 
@@ -77,7 +90,7 @@ public class Auth_Sign_Up extends AppCompatActivity {
         String passWordTemp = mPassWord.getText().toString().trim();
         String passWordMatchTemp = mPassWordMatch.getText().toString().trim();
         //Todo : Authenticate First, Last , Email , PassWord, and Password Match Cases
-        mCreateAccountBt.setEnabled(false);
+        //mCreateAccountBt.setEnabled(false);
         mProgressBar.setVisibility(View.VISIBLE);
 
         //Downloading Default Receipt File
@@ -155,7 +168,7 @@ public class Auth_Sign_Up extends AppCompatActivity {
         } catch (Exception e) {
             emailTemp = null;
             passWordTemp = null;
-            mCreateAccountBt.setEnabled(true);
+            //mCreateAccountBt.setEnabled(true);
             mProgressBar.setVisibility(View.GONE);
             Log.d(TAG, "create_New_Account_Handler: INSIDE CATCH --> " + e);
         }
@@ -196,5 +209,32 @@ public class Auth_Sign_Up extends AppCompatActivity {
         Toast.makeText(this, "Check Password", Toast.LENGTH_SHORT).show();
         return null;
     }
+
+    //Text Edit Listener for handling toggling Sign Up button
+    private TextWatcher loginTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            String firstName = mFirstName.getText().toString();
+            String lastName = mLastName.getText().toString();
+            String email = mEmail.getText().toString().trim();
+            String password = mPassWord.getText().toString().trim();
+            String matchPassword = mPassWordMatch.getText().toString().trim();
+            mCreateAccountBt.setEnabled(!firstName.isEmpty() &&
+                                        !lastName.isEmpty() &&
+                                        !email.isEmpty() &&
+                                        !password.isEmpty() &&
+                                        !matchPassword.isEmpty());
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
 
 }

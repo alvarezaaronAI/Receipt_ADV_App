@@ -31,6 +31,7 @@
         android:padding="16dp"
         android:textSize="22sp"
         android:fontFamily="sans-serif-condensed"
+        android:inputType="text"
         />
     <TextView
         android:layout_width="match_parent"
@@ -52,7 +53,9 @@
         android:textAlignment="center"
         android:padding="16dp"
         android:textSize="22sp"
-        android:fontFamily="sans-serif-condensed"/>
+        android:fontFamily="sans-serif-condensed"
+        android:inputType="textPassword"
+        />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
